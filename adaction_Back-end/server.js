@@ -22,7 +22,6 @@ app.get("/volunteers", async (req, res) => {
   res.json(result.rows)
   } catch (error) {
     console.log(error)
-    
   }
 });
 
