@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,28 @@
     <script type="module" src="../adaction_Front-end/js/volunteers.js" defer></script>
     <link rel="stylesheet" href="../adaction_Front-end/css/volunteers.css">
 </head>
+
 <body>
-    <div class="container"></div>
+    <div class="search-container">
+        <form class="search-form">
+            <div class="form-group">
+                <label for="location"> Localisation </label>
+                <select id="city-list">
+                    <option></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="name"> Nom : </label>
+                <input type="text" id="name-input" placeholder="Entrer le nom" required>
+            </div>
+
+            <button id="search-btn" type="submit">🔍</button>
+        </form>
+    </div>
+
+    <div class="profil">
+    <div class="volunteer-profil"></div>
+    </div>
 </body>
+
 </html>
