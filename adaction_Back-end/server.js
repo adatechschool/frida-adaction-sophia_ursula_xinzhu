@@ -27,6 +27,29 @@ app.get("/volunteers", async (req, res) => {
   }
 });
 
+app.get("/volunteers/search", async (req, res) => {
+  const { city, name } = req.query;
+
+  try {
+    const result = await pool.query(
+      `SELECT v.id, v.name, v.city, COALESCE(SUM(q.quantity),0) AS total_quantity
+       FROM volunteers v
+       LEFT JOIN collections c ON v.id = c.volunteer_id
+       LEFT JOIN quantities q ON c.id = q.collection_id
+       WHERE ($1::text IS NULL OR v.city = $1)
+         AND ($2::text IS NULL OR v.name ILIKE '%' || $2 || '%')
+       GROUP BY v.id, v.name, v.city`,
+      [city || null, name || null]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la recherche" });
+  }
+});
+
+
 app.get("/quantities", async(req, res) => {
   try {
     const quantity = await pool.query ('SELECT volunteers.name, volunteers.city,\
@@ -41,5 +64,16 @@ app.get("/quantities", async(req, res) => {
     console.log(error)
   }
 })
+
+app.get("/cities", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT DISTINCT city FROM volunteers ORDER BY city ASC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération des villes" });
+  }
+});
+
 
 app.listen(3000, () => { console.log("Serveur lancé sur http://localhost:3000"); });
