@@ -13,17 +13,18 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // recommandé pour Neon afin de sécuriser la connexion
 });
 
-app.use(cors({ origin: "http://127.0.0.1:5500"}));
+app.use(cors()); // Autorise toutes les origines pour faciliter les tests
 
 app.get("/volunteers", async (req, res) => {  
   try {
-    
-  const result = await pool.query('SELECT * from volunteers')
-  res.json(result.rows)
+    const result = await pool.query('SELECT * from volunteers');
+    res.json(result.rows);
   } catch (error) {
-    console.log(error)
-    
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur ou base de données', details: error.message });
   }
-});
+}); 
+
+
 
 app.listen(3000, () => {  console.log("Serveur lancé sur http://localhost:3000");});
