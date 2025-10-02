@@ -52,18 +52,22 @@ app.get("/volunteers/search", async (req, res) => {
 
 app.get("/quantities", async(req, res) => {
   try {
-    const quantity = await pool.query ('SELECT volunteers.name, volunteers.city,\
-      SUM(quantities.quantity) AS total_quantity\
-      FROM quantities\
-      INNER JOIN collections ON quantities.collection_id = collections.id\
-      INNER JOIN volunteers ON collections.volunteer_id = volunteers.id\
-      GROUP BY volunteers.id, volunteers.name')
+    const quantity = await pool.query(`
+      SELECT volunteers.id, volunteers.name, volunteers.city,
+             COALESCE(SUM(quantities.quantity),0) AS total_quantity
+      FROM volunteers
+      LEFT JOIN collections ON volunteers.id = collections.volunteer_id
+      LEFT JOIN quantities ON collections.id = quantities.collection_id
+      GROUP BY volunteers.id, volunteers.name, volunteers.city
+    `);
 
-    res.json(quantity.rows)
+    res.json(quantity.rows);
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    res.status(500).json({ error: "Erreur lors de la récupération des quantités" });
   }
-})
+});
+
 
 app.get("/cities", async (req, res) => {
   try {
@@ -72,6 +76,32 @@ app.get("/cities", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erreur lors de la récupération des villes" });
+  }
+});
+
+
+
+app.delete("/volunteers/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await pool.query(`
+      DELETE FROM quantities
+      WHERE collection_id IN (SELECT id FROM collections WHERE volunteer_id = $1)
+    `, [id]);
+
+    await pool.query(`DELETE FROM collections WHERE volunteer_id = $1`, [id]);
+
+    const result = await pool.query(`DELETE FROM volunteers WHERE id = $1`, [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Bénévole introuvable" });
+    }
+
+    res.json({ message: "Bénévole supprimé avec succès" });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la suppression du bénévole" });
   }
 });
 
