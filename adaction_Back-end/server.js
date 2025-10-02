@@ -16,7 +16,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-
+//& Récupérer les bénévoles:
 app.get("/volunteers", async (req, res) => {
   try {
     const result = await pool.query(`
@@ -35,7 +35,7 @@ app.get("/volunteers", async (req, res) => {
   }
 });
 
-
+//& Création d'une route search 
 app.get("/volunteers/search", async (req, res) => {
   const { city, name } = req.query;
   try {
@@ -58,7 +58,7 @@ app.get("/volunteers/search", async (req, res) => {
   }
 });
 
-
+//& Récupérer les villes distinctes:
 app.get("/cities", async (req, res) => {
   try {
     const result = await pool.query("SELECT DISTINCT city FROM volunteers ORDER BY city ASC");
@@ -69,7 +69,30 @@ app.get("/cities", async (req, res) => {
   }
 });
 
+//& Modifier le nom et la ville du bénévole:
+app.put("/volunteers/:id", async (req, res) => {
+  const { id } = req.params;         
+  const { name, city } = req.body;   
 
+  try {
+    const result = await pool.query(
+      "UPDATE volunteers SET name = $1, city = $2 WHERE id = $3 RETURNING *",
+      [name, city, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Bénévole introuvable" });
+    }
+
+    res.json({ message: "Bénévole modifié avec succès", volunteer: result.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la modification du bénévole" });
+  }
+});
+
+
+//& Supprimer un bénévole:
 app.delete("/volunteers/:id", async (req, res) => {
   const { id } = req.params;
   try {

@@ -1,6 +1,5 @@
 const API_URL = "http://localhost:3000";
 
-// ---------------------- FETCH DATA ----------------------
 
 //& Récupérer tous les bénévoles
 async function fetchVolunteers() {
@@ -24,17 +23,22 @@ async function fetchCities() {
   }
 }
 
-// ---------------------- AFFICHAGE ----------------------
 
 //& Afficher la liste des bénévoles
 async function displayVolunteers(volunteers = null) {
   const data = volunteers || await fetchVolunteers();
+
   const container = document.getElementById("volunteers");
+  const addVolunteer = document.getElementById("addVolunteer");
+
   container.innerHTML = "";
 
   if (data.length === 0) {
     container.innerHTML = "<p>Aucun profil trouvé.</p>";
+    addVolunteer.style.display = "none";
     return;
+  } else {
+    addVolunteer.style.display = "block";
   }
 
   data.forEach(v => {
@@ -51,8 +55,8 @@ async function displayVolunteers(volunteers = null) {
           </ul>
         </div>
         <div>
-          <button class="edit-btn">Modifier</button>
-          <button class="delete-btn" data-id="${v.id}">Supprimer</button>
+          <button class="edit-btn" data-id="${v.id}"> Modifier </button>
+          <button class="delete-btn" data-id="${v.id}"> Supprimer </button>
         </div>
       </div>
     `;
@@ -63,7 +67,36 @@ async function displayVolunteers(volunteers = null) {
   deleteVolunteers();
 }
 
-// ---------------------- SUPPRESSION ----------------------
+
+//& Modifier un bénévole
+
+document.getElementById("volunteers").addEventListener("click", async (e) => {
+  if (e.target.classList.contains("edit-btn")) {
+    const id = e.target.dataset.id;
+
+    const newName = prompt("Entrez le nouveau nom du bénévole :");
+    const newCity = prompt("Entrez la nouvelle ville du bénévole :");
+
+    if (newName && newCity) {
+      try {
+        const response = await fetch(`${API_URL}/volunteers/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: newName, city: newCity })
+        });
+
+        const result = await response.json();
+        console.log("Modification :", result);
+
+
+        displayVolunteers();
+      } catch (error) {
+        console.error("Erreur modification:", error);
+      }
+    }
+  }
+});
+
 
 //& Supprimer un Bénévole
 function deleteVolunteers() {
@@ -71,8 +104,6 @@ function deleteVolunteers() {
     btn.addEventListener("click", async e => {
       const id = e.target.dataset.id;
       if (!id) return;
-
-      // Confirmation personnalisée
       if (!confirm("Voulez-vous vraiment supprimer ce bénévole ?")) return;
 
       try {
@@ -80,16 +111,13 @@ function deleteVolunteers() {
         const result = await res.json();
         console.log("Suppression:", result);
 
-        displayVolunteers(); // recharger la liste
+        displayVolunteers();
       } catch (err) {
         console.error("Erreur suppression:", err);
       }
     });
   });
 }
-
-// ---------------------- RECHERCHE ----------------------
-
 
 //& Rechercher les bénévoles selon la ville et le nom :
 document.querySelector(".search-form").addEventListener("submit", async e => {
@@ -111,7 +139,6 @@ document.querySelector(".search-form").addEventListener("submit", async e => {
   }
 });
 
-// ---------------------- INITIALISATION ----------------------
 
 //& Implanter les villes dans select options:
 async function loadCities() {
@@ -126,7 +153,6 @@ async function loadCities() {
   });
 }
 
-// Lancer l’app
 loadCities();
 displayVolunteers();
 
