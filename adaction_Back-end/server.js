@@ -51,6 +51,7 @@ try {
 	[volunteer_id, collections_date, collections_location]
 	);
   const collection_id = insertCollection.rows[0].id;
+  console.log(collection_id);
 // insérer des infos dans la table quantities 
 //!unnest() permet de reansformer le tableau en lignes verticales dans la BDD
   const insertQuantities = await pool.query(
@@ -70,7 +71,15 @@ try {
 console.error("erreur lors de la création de la collecte", error);
 }
 });
-
+//🚀route pour récupérer toutes les catégories déchets
+app.get("/categories", async (req, res) => {  
+  try {
+  const result = await pool.query('SELECT name from categories ORDER BY id')
+  res.json(result.rows)
+  } catch (error) {
+    console.log(error)
+  }
+});
 
 //🚀 route pour la page my_collection
 app.get("/my_collection/:id", async (req, res) => {
