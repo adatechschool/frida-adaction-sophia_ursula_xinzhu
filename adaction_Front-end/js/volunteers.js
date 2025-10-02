@@ -1,87 +1,98 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = "http://localhost:3000";
 
-//& Afficher la quantité des collectes bénévoles
+// ---------------------- FETCH DATA ----------------------
+
+//& Récupérer tous les bénévoles
 async function fetchVolunteers() {
   try {
-    const response = await fetch(`${API_URL}/quantities`);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Erreur fetchVolunteers:", error);
+    const res = await fetch(`${API_URL}/volunteers`);
+    return await res.json();
+  } catch (err) {
+    console.error("Erreur fetchVolunteers:", err);
     return [];
   }
 }
 
-//& Afficher la liste des bénévoles:
-const displayVolunteers = async (volunteers = null) => {
+//& Récupérer les villes
+async function fetchCities() {
   try {
-    const dataVolunteers = volunteers || await fetchVolunteers();
-    const container = document.getElementById("volunteers");
-    container.innerHTML = "";
-
-    if (dataVolunteers.length === 0) {
-      container.innerHTML = "<p> Aucun bénévole trouvé.</p>";
-      const addVolunteer = document.querySelectorAll('delete-btn')
-      addVolunteer.innerHTML = ""
-      return;
-    }
-
-    dataVolunteers.forEach(volunteer => {
-      const div = document.createElement("div");
-      div.classList.add("volunteer-profil");
-
-      div.innerHTML = `
-          <div class="profil-text">
-            <ul> 
-              <li><strong>Nom:</strong> ${volunteer.name}</li>
-              <li><strong>Localisation:</strong> ${volunteer.city}</li>
-              <li class='collect'><strong>Nombre de déchets collectés:</strong> ${volunteer.total_quantity || 0}</li>
-            </ul>
-          </div>
-          <div class="profil-btn">
-            <button class="edit-btn">Modifier</button>
-            <button class="delete-btn" data-id="${volunteer.id}">Supprimer</button>
-          </div>
-      `;
-
-      container.appendChild(div);
-    });
-
-    //& Supprimer un bénévole:
-
-    document.querySelectorAll(".delete-btn").forEach(button => {
-      button.addEventListener("click", async (e) => {
-        const id = e.target.dataset.id;
-        if (!id) return;
-
-        if (confirm("Voulez-vous vraiment supprimer ce bénévole ?")) {
-          try {
-            const response = await fetch(`${API_URL}/volunteers/${id}`, { method: "DELETE" });
-            const result = await response.json();
-            console.log("Suppression:", result);
-
-            if (volunteers) {
-              const filtered = volunteers.filter(v => v.id != id);
-              displayVolunteers(filtered);
-            } else {
-              displayVolunteers();
-            }
-          } catch (error) {
-            console.error("Erreur suppression bénévole:", error);
-          }
-        }
-      });
-    });
-
-  } catch (error) {
-    console.error("Erreur affichage des bénévoles:", error);
+    const res = await fetch(`${API_URL}/cities`);
+    return await res.json();
+  } catch (err) {
+    console.error("Erreur fetchCities:", err);
+    return [];
   }
-};
+}
 
-displayVolunteers();
+// ---------------------- AFFICHAGE ----------------------
 
-//& Rechercher les bénévoles par nom et ville, soumettre le formulaire:
-document.querySelector(".search-form").addEventListener("submit", async (e) => {
+//& Afficher la liste des bénévoles
+async function displayVolunteers(volunteers = null) {
+  const data = volunteers || await fetchVolunteers();
+  const container = document.getElementById("volunteers");
+  container.innerHTML = "";
+
+  if (data.length === 0) {
+    container.innerHTML = "<p>Aucun profil trouvé.</p>";
+    return;
+  }
+
+  data.forEach(v => {
+    const div = document.createElement("div");
+    div.className = "volunteer-profil";
+
+    div.innerHTML = `
+      <div class="profil-box">
+        <div>
+          <ul>
+            <li><strong>Nom:</strong> ${v.name}</li>
+            <li><strong>Ville:</strong> ${v.city}</li>
+            <li><strong>Déchets collectés:</strong> ${v.total_quantity}</li>
+          </ul>
+        </div>
+        <div>
+          <button class="edit-btn">Modifier</button>
+          <button class="delete-btn" data-id="${v.id}">Supprimer</button>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+
+  deleteVolunteers();
+}
+
+// ---------------------- SUPPRESSION ----------------------
+
+//& Supprimer un Bénévole
+function deleteVolunteers() {
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", async e => {
+      const id = e.target.dataset.id;
+      if (!id) return;
+
+      // Confirmation personnalisée
+      if (!confirm("Voulez-vous vraiment supprimer ce bénévole ?")) return;
+
+      try {
+        const res = await fetch(`${API_URL}/volunteers/${id}`, { method: "DELETE" });
+        const result = await res.json();
+        console.log("Suppression:", result);
+
+        displayVolunteers(); // recharger la liste
+      } catch (err) {
+        console.error("Erreur suppression:", err);
+      }
+    });
+  });
+}
+
+// ---------------------- RECHERCHE ----------------------
+
+
+//& Rechercher les bénévoles selon la ville et le nom :
+document.querySelector(".search-form").addEventListener("submit", async e => {
   e.preventDefault();
 
   const city = document.getElementById("citySelect").value;
@@ -92,32 +103,31 @@ document.querySelector(".search-form").addEventListener("submit", async (e) => {
   if (name) params.append("name", name);
 
   try {
-    const response = await fetch(`${API_URL}/volunteers/search?${params.toString()}`);
-    const data = await response.json();
-
+    const res = await fetch(`${API_URL}/volunteers/search?${params}`);
+    const data = await res.json();
     displayVolunteers(data);
-  } catch (error) {
-    console.error("Erreur recherche :", error);
+  } catch (err) {
+    console.error("Erreur recherche:", err);
   }
 });
 
-//& implanter les villes dans select options: 
-async function loadCities() {
-  try {
-    const response = await fetch(`${API_URL}/cities`);
-    const cities = await response.json();
+// ---------------------- INITIALISATION ----------------------
 
-    const select = document.getElementById("citySelect");
-    cities.forEach(c => {
-      const option = document.createElement("option");
-      option.value = c.city;
-      option.textContent = c.city;
-      select.appendChild(option);
-    });
-  } catch (err) {
-    console.error("Erreur lors du chargement des villes :", err);
-  }
+//& Implanter les villes dans select options:
+async function loadCities() {
+  const cities = await fetchCities();
+  const select = document.getElementById("citySelect");
+
+  cities.forEach(c => {
+    const option = document.createElement("option");
+    option.value = c.city;
+    option.textContent = c.city;
+    select.appendChild(option);
+  });
 }
 
+// Lancer l’app
 loadCities();
+displayVolunteers();
+
 
