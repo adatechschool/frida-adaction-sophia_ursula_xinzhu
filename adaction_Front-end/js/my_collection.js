@@ -72,3 +72,7 @@ const getFilteredData = async (id, location, date) => {
     console.error("Problème de connexion au serveur", error);
   }
 };
+//bouton reset
+document.querySelector("#reset").addEventListener("click",()=>{
+  loadData(getData(id));
+})
