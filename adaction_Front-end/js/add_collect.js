@@ -31,7 +31,7 @@ const getUserInput = () => {
     const name = document.querySelector("#name").value;
     const location = document.querySelector("#city").value;
     const date = document.querySelector("#date").value;
-    const quantities = document.querySelectorAll(".quantity");
+    const quantities = document.querySelectorAll(".qty");
     let quantityArr = [];
     for (const item of quantities) {
       quantityArr.push(item.value);
@@ -63,12 +63,9 @@ const createCollection = async (name, date, location, arr) => {
 };
 // Gestion des boutons + et -
 const addBtns = () => {
-  const buttons = document.querySelectorAll(".btn")
   document.querySelectorAll(".btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const input = btn.parentElement.querySelector(".qty");
-      console.log(input)
-
       if (!input) return;
 
       let value = Number(input.value) || 0;
@@ -81,3 +78,4 @@ const addBtns = () => {
     });
   });
 };
+
