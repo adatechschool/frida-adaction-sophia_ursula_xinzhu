@@ -35,7 +35,6 @@ app.get("/volunteers", async (req, res) => {
   console.log("Route /volunteers appelée");
   try {
     const result = await pool.query("SELECT * FROM volunteers");
-    console.log("Résultat SQL volunteers:", result.rows);
     res.json(result.rows);
   } catch (error) {
     console.error("Erreur SQL volunteers:", error);
@@ -43,61 +42,73 @@ app.get("/volunteers", async (req, res) => {
   }
 });
 
-// Total des déchets collectés
-app.get("/stats/total", async (req, res) => {
-  console.log("Route /stats/total appelée");
+// Liste des villes présentes dans les collections
+app.get("/cities", async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT DISTINCT location
+            FROM collections
+            WHERE location IS NOT NULL
+            ORDER BY location
+        `);
+        // renvoie un tableau de strings
+        const cities = result.rows.map(r => r.location);
+        res.json(cities);
+    } catch (error) {
+        console.error("Erreur SQL cities:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Liste des villes
+app.get("/stats/overview", async (req, res) => {
   try {
-    const result = await pool.query(`
+    const { location, date } = req.query;
+    const params = [];
+    let where = "WHERE 1=1";
+
+    if (date) {
+      params.push(date);
+      where += ` AND DATE(c."collection_date") = $${params.length}`;
+    }
+
+    if (location) {
+      params.push(location);
+      where += ` AND c.location = $${params.length}`;
+    }
+    // Total global ou filtré
+    const totalQuery = `
       SELECT SUM(q.quantity) AS total
       FROM quantities q
       JOIN collections c ON q.collection_id = c.id
-    `);
-    console.log("Résultat SQL total:", result.rows[0]);
-    res.json(result.rows[0] || { total: 0 });
+      ${where}
+    `;
+    const totalResult = await pool.query(totalQuery, params);
+    // Total par catégorie
+    const categoriesQuery = `
+      SELECT cat.name, SUM(q.quantity) AS total
+      FROM quantities q
+      JOIN categories cat ON q.category_id = cat.id
+      JOIN collections c ON q.collection_id = c.id
+      ${where}
+      GROUP BY cat.name
+    `;
+    const categoriesResult = await pool.query(categoriesQuery, params);
+    res.json({
+      total: totalResult.rows[0]?.total ? Number(totalResult.rows[0].total) : 0,
+      categories: categoriesResult.rows.map(r => ({
+        name: r.name,
+        total: r.total ? Number(r.total) : 0
+      }))
+    });
+
   } catch (error) {
-    console.error("Erreur SQL total:", error);
+    console.error("Erreur SQL overview:", error);
     res.status(500).json({ error: error.message });
   }
 });
-//Total des dechets par categories
-app.get("/stats/categories", async (req, res) => {
-  try {
-    const result = await pool.query(`SELECT categories.name , SUM(quantities.quantity) AS total 
-FROM quantities JOIN categories on quantities.category_id = categories.id 
-GROUP BY categories.name;`);
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Erreur SQL categories:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-// ajouter les filtres 
-app.get("/stats/filters", async (req, res) => {
-  try { 
-    const {year,month,location} = req.query;
-    let query = `
-SELECT SUM (quantities.quantity) AS total 
-FROM quantities JOIN collections on quantities.collection_id = collections.id 
-WHERE 1=1`;
-    const params = [];
-    if (year) {
-      params.push(year);
-      query += ` AND EXTRACT(YEAR FROM collections.date) = $${params.length}`;
-    }
-    if (month) {
-      params.push(month);
-      query += ` AND EXTRACT(MONTH FROM collections.date) = $${params.length}`;
-    } if (location) {
-      params.push(location);
-      query += ` AND collections.location = $${params.length}`;
-    }
-    const result = await pool.query(query, params);
-    res.json(result.rows[0] );
-  } catch (error) {
-    console.error("Erreur SQL filters:", error);
-    res.status(500).json({ error: error.message });
-  } });
 
 // Démarrer le serveur
-      
-app.listen(3000, () => { console.log("Serveur lancé sur http://localhost:3000"); });
+app.listen(3000, () => {
+  console.log("🚀 Serveur lancé sur http://localhost:3000");
+});
