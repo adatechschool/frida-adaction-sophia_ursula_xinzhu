@@ -2,15 +2,45 @@ const API_URL = "http://localhost:3000";
 
 let id = 1;
 
-const loadTotal = async (id) => {
-  const total = document.querySelector("#total");
-  const container = document.querySelector(".container");
+//fonction pour implanter la liste des locations dans select options
+async function loadLocations(id) {
+  try {
+    const res = await fetch(`${API_URL}/locations/${id}`);
+    const cities = await res.json();
+    console.log(cities);
+    const select = document.getElementById("citySelect");
+
+    cities.forEach((c) => {
+      const option = document.createElement("option");
+      option.value = c.location;
+      option.textContent = c.location;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Erreur fetchCities:", err);
+    return [];
+  }
+}
+loadLocations(id);
+
+//fonction pour récupérer toutes les stats du bénévole
+const getData = async (id) => {
   try {
     const response = await fetch(`${API_URL}/my_collection/${id}`);
     const data = await response.json();
-
-    console.log(data);
-    total.innerHTML = `${data[0].volunteer_name} a effectué ${data[0].total_global} collectes au total ! `
+    return data;
+  } catch (error) {
+    console.error("Problème de connexion au serveur", error);
+  }
+};
+// getData(id);
+//fonction pour afficher les stats
+const loadData = async (result) => {
+  const total = document.querySelector("#total");
+  const container = document.querySelector(".container");
+  try {
+    const data = await result;
+    total.innerHTML = `${data[0].volunteer_name} a effectué ${data[0].total_global} collectes au total ! `;
     container.innerHTML = "";
     for (const item of data) {
       container.innerHTML += `
@@ -21,17 +51,24 @@ const loadTotal = async (id) => {
     console.error("Problème de connexion au serveur", error);
   }
 };
-loadTotal(id);
+loadData(getData(id));
+//déclencheur du bouton search 
+document.querySelector("#collections-search").addEventListener("click",()=>{
+  const location = document.querySelector("#citySelect").value;
+  const date = document.querySelector("#collections-date").value;
+  console.log(date)
+  loadData(getFilteredData(id,location,date))
+})
+//fonction pour récupérer les stats filtrés
+const getFilteredData = async (id, location, date) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/my_collection/${id}/${location}/${date}`
+    );
+    const data = await response.json();
+    return data;
 
-// const searchTotal = async (id, location, date) => {
-//     try {
-//     const response = await fetch(`${API_URL}/my_collection/${id}/${location}/${date}`);
-//     const data = await response.json();
-
-//     console.log(data);
-//     } catch (error) {
-//     console.error("Problème de connexion au serveur", error);
-
-//     }
-// }
-// searchTotal(1, "Rouen","2025-09-30");
+  } catch (error) {
+    console.error("Problème de connexion au serveur", error);
+  }
+};

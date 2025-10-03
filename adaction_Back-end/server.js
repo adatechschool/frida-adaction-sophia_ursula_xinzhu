@@ -104,7 +104,25 @@ app.post("/add_collection", async (req, res) => {
 });
 
 
-//🚀 route pour la page my_collection
+//🚀 route pour la page my_collection: récupérer les localisations
+app.get("/locations/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const result = await pool.query(
+      "SELECT DISTINCT location\
+      FROM collections\
+      JOIN volunteers ON volunteers.id = collections.volunteer_id\
+      WHERE volunteers.id = $1\
+      ORDER BY location", [id]);
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur lors de la récupération des villes" });
+  }
+});
+
+//🚀 route pour la page my_collection: affichage des stats 
 app.get("/my_collection/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -129,6 +147,7 @@ app.get("/my_collection/:id", async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
+//🚀 route pour la page my_collection : search 
 
 app.get("/my_collection/:id/:location/:date", async (req, res) => {
   try {
