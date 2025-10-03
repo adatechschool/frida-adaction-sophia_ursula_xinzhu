@@ -24,6 +24,18 @@ app.get("/volunteers", async (req, res) => {
   }
 });
 
+
+
+//🚀route pour récupérer toutes les catégories déchets
+app.get("/categories", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT name from categories ORDER BY id");
+    res.json(result.rows);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // 🚀 nouvelle route pour la page add_collect: ajouter une nouvelle collecte
 app.post("/add_collection", async (req, res) => {
   console.log("[POST/collection] body reçu:", req.body);
@@ -32,7 +44,7 @@ app.post("/add_collection", async (req, res) => {
     collections_date,
     collections_location,
     quantities,
-  } = req.body; //!req.body est stocké dans une variable d'objet
+  } = req.body; 
   try {
     //récupérer le id du volunteer
     const volunteerResult = await pool.query(
@@ -90,15 +102,7 @@ app.post("/add_collection", async (req, res) => {
     console.error("erreur lors de la création de la collecte", error);
   }
 });
-//🚀route pour récupérer toutes les catégories déchets
-app.get("/categories", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT name from categories ORDER BY id");
-    res.json(result.rows);
-  } catch (error) {
-    console.log(error);
-  }
-});
+
 
 //🚀 route pour la page my_collection
 app.get("/my_collection/:id", async (req, res) => {
