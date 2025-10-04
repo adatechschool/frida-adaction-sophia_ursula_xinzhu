@@ -62,6 +62,9 @@ document.querySelector("#collections-search").addEventListener("click",()=>{
 //fonction pour récupérer les stats filtrés
 const getFilteredData = async (id, location, date) => {
   try {
+    if (date === ""){
+      date = "All"
+    }
     const response = await fetch(
       `${API_URL}/my_collection/${id}/${location}/${date}`
     );

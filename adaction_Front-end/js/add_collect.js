@@ -66,13 +66,15 @@ const addBtns = () => {
   document.querySelectorAll(".btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const input = btn.parentElement.querySelector(".qty");
-      if (!input) return;
+      // if (!input) return;
 
       let value = Number(input.value) || 0;
       if (btn.classList.contains("add")) {
         value++;
       } else if (btn.classList.contains("sub")) {
-        value = Math.max(0, value - 1);
+        if (value>0){
+        value -- ;
+        }
       }
       input.value = value;
     });

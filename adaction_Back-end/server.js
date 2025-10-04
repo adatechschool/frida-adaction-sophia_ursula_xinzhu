@@ -152,8 +152,9 @@ app.get("/my_collection/:id", async (req, res) => {
 app.get("/my_collection/:id/:location/:date", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const location = req.params.location;
-    const date = req.params.date;
+    let location = req.params.location;
+    let date = req.params.date;
+    
     const result = await pool.query(
       `SELECT
         v.name AS volunteer_name,
@@ -165,10 +166,12 @@ app.get("/my_collection/:id/:location/:date", async (req, res) => {
       JOIN collections col ON q.collection_id = col.id
       JOIN volunteers v ON col.volunteer_id = v.id
       JOIN categories c ON c.id = q.category_id
-      WHERE v.id = $1 AND col.collection_date=$2 AND col.location=$3
+      WHERE v.id = $1 AND ( $2::text = 'All' OR col.collection_date = $2::date) AND (col.location=$3 OR $3 = 'All')
       GROUP BY v.name, q.category_id, c.name, v.id`,
       [id, date, location]
+
     );
+    await pool
     res.json(result.rows);
   } catch (error) {
     console.error("Erreur lors de la récupération de la collection:", error);
