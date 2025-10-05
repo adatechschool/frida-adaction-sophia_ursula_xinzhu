@@ -35,7 +35,7 @@ app.get("/volunteers", async (req, res) => {
   }
 });
 
-//& Création d'une route search 
+//& Création d'une route search pour la recherche d'un bénévole
 app.get("/volunteers/search", async (req, res) => {
   const { city, name } = req.query;
   try {
@@ -46,7 +46,7 @@ app.get("/volunteers/search", async (req, res) => {
        LEFT JOIN collections c ON v.id = c.volunteer_id
        LEFT JOIN quantities q ON c.id = q.collection_id
        WHERE ($1::text IS NULL OR v.city = $1)
-         AND ($2::text IS NULL OR v.name ILIKE '%' || $2 || '%')
+         AND ($2::text IS NULL OR v.name ILIKE $2 || '%')
        GROUP BY v.id, v.name, v.city
        ORDER BY v.name ASC`,
       [city || null, name || null]

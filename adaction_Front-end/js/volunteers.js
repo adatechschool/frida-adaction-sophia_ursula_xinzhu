@@ -1,6 +1,5 @@
 const API_URL = "http://localhost:3000";
 
-
 //& Récupérer tous les bénévoles
 async function fetchVolunteers() {
   try {
@@ -23,11 +22,10 @@ async function fetchCities() {
   }
 }
 
-
 //& Afficher la liste des bénévoles
 async function displayVolunteers(volunteers = null) {
-  const data = volunteers || await fetchVolunteers();
 
+  const data = volunteers || await fetchVolunteers();
   const container = document.getElementById("volunteers");
   const addVolunteer = document.getElementById("addVolunteer");
 
@@ -47,16 +45,16 @@ async function displayVolunteers(volunteers = null) {
 
     div.innerHTML = `
       <div class="profil-box">
-        <div>
+        <div class="info">
           <ul>
-            <li><strong>Nom:</strong> ${v.name}</li>
-            <li><strong>Ville:</strong> ${v.city}</li>
+            <li><strong>Nom:</strong> <span class="name">${v.name}</span></li>
+            <li><strong>Ville:</strong> <span class="city">${v.city}</span></li>
             <li><strong>Déchets collectés:</strong> ${v.total_quantity}</li>
           </ul>
         </div>
-        <div>
-          <button class="edit-btn" data-id="${v.id}"> Modifier </button>
-          <button class="delete-btn" data-id="${v.id}"> Supprimer </button>
+        <div class="actions">
+          <button class="edit-btn" data-id="${v.id}">Modifier</button>
+          <button class="delete-btn" data-id="${v.id}">Supprimer</button>
         </div>
       </div>
     `;
@@ -64,62 +62,115 @@ async function displayVolunteers(volunteers = null) {
     container.appendChild(div);
   });
 
+  addInlineEditing();
   deleteVolunteers();
 }
 
+//& Inline Editing (champs input lorsque le bouton modifier(edit-btn) est cliqué)
 
-//& Modifier un bénévole
-
-document.getElementById("volunteers").addEventListener("click", async (e) => {
-  if (e.target.classList.contains("edit-btn")) {
-    const id = e.target.dataset.id;
-
-    const newName = prompt("Entrez le nouveau nom du bénévole :");
-    const newCity = prompt("Entrez la nouvelle ville du bénévole :");
-
-    if (newName && newCity) {
-      try {
-        const response = await fetch(`${API_URL}/volunteers/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: newName, city: newCity })
-        });
-
-        const result = await response.json();
-        console.log("Modification :", result);
-
-
-        displayVolunteers();
-      } catch (error) {
-        console.error("Erreur modification:", error);
-      }
-    }
-  }
-});
-
-
-//& Supprimer un Bénévole
-function deleteVolunteers() {
-  document.querySelectorAll(".delete-btn").forEach(btn => {
-    btn.addEventListener("click", async e => {
+function addInlineEditing() {
+  document.querySelectorAll(".edit-btn").forEach(btn => {
+    
+    btn.addEventListener("click", (e) => {
+      const profilBox = e.target.closest(".profil-box");
       const id = e.target.dataset.id;
-      if (!id) return;
-      if (!confirm("Voulez-vous vraiment supprimer ce bénévole ?")) return;
 
-      try {
-        const res = await fetch(`${API_URL}/volunteers/${id}`, { method: "DELETE" });
-        const result = await res.json();
-        console.log("Suppression:", result);
+      const nameSpan = profilBox.querySelector(".name");
+      const citySpan = profilBox.querySelector(".city");
 
-        displayVolunteers();
-      } catch (err) {
-        console.error("Erreur suppression:", err);
-      }
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.value = nameSpan.textContent;
+
+      const cityInput = document.createElement("input");
+      cityInput.type = "text";
+      cityInput.value = citySpan.textContent;
+
+      nameSpan.replaceWith(nameInput);
+      citySpan.replaceWith(cityInput);
+
+      // Changer le bouton Modifier en Sauvegarder
+      e.target.textContent = "Sauvegarder";
+      e.target.classList.add("save-btn");
+      e.target.classList.remove("edit-btn");
+
+      // Fonction pour envoyer les modifications au serveur
+      const saveChanges = async () => {
+        const newName = nameInput.value.trim();
+        const newCity = cityInput.value.trim();
+        if (newName && newCity) {
+          try {
+            await fetch(`${API_URL}/volunteers/${id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: newName, city: newCity })
+            });
+            await displayVolunteers();
+            await loadCities();
+          } catch (err) {
+            console.error("Erreur modification inline:", err)
+          }
+        }
+      };
+
+      // Sauvegarde au clic sur le bouton
+      e.target.addEventListener("click", saveChanges, { once: true })
+
+      // Sauvegarde à la sortie de l'input (blur)
+      nameInput.addEventListener("blur", saveChanges, { once: true })
+      cityInput.addEventListener("blur", saveChanges, { once: true })
+
+      // Sauvegarde à la touche Entrée
+      nameInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
+      cityInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
     });
   });
 }
 
+//& Supprimer un Bénévole
+
+let deleteId = null;
+
+function deleteVolunteers() {
+  document.querySelectorAll(".delete-btn").forEach(btn => {
+    btn.addEventListener("click", e => {
+      deleteId = e.target.dataset.id;
+      openModal();
+    });
+  });
+}
+
+function openModal() {
+  document.getElementById("deleteModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("deleteModal").style.display = "none";
+  deleteId = null;
+}
+
+document.getElementById("confirmDelete").addEventListener("click", async () => {
+  if (!deleteId) return;
+  try {
+    await fetch(`${API_URL}/volunteers/${deleteId}`,
+      { method: "DELETE" });
+    await displayVolunteers();
+    closeModal();
+  } catch (err) {
+    console.error("Erreur suppression:", err);
+  }
+});
+
+document.getElementById("cancelDelete").addEventListener("click", closeModal);
+document.querySelector(".close").addEventListener("click", closeModal);
+
+window.addEventListener("click", e => {
+  if (e.target === document.getElementById("deleteModal"))
+    closeModal();
+});
+
 //& Rechercher les bénévoles selon la ville et le nom :
+
 document.querySelector(".search-form").addEventListener("submit", async e => {
   e.preventDefault();
 
@@ -133,17 +184,20 @@ document.querySelector(".search-form").addEventListener("submit", async e => {
   try {
     const res = await fetch(`${API_URL}/volunteers/search?${params}`);
     const data = await res.json();
-    displayVolunteers(data);
+
+    await displayVolunteers(data);
+
   } catch (err) {
     console.error("Erreur recherche:", err);
   }
 });
 
-
 //& Implanter les villes dans select options:
 async function loadCities() {
   const cities = await fetchCities();
   const select = document.getElementById("citySelect");
+
+  select.innerHTML = "";
 
   cities.forEach(c => {
     const option = document.createElement("option");
@@ -153,7 +207,11 @@ async function loadCities() {
   });
 }
 
-loadCities();
-displayVolunteers();
+await loadCities();
+await displayVolunteers();
+
+
+
+
 
 
