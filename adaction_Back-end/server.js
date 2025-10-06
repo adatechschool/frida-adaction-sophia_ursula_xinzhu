@@ -44,20 +44,20 @@ app.get("/volunteers", async (req, res) => {
 
 // Liste des villes présentes dans les collections
 app.get("/cities", async (req, res) => {
-    try {
-        const result = await pool.query(`
+  try {
+    const result = await pool.query(`
             SELECT DISTINCT location
             FROM collections
             WHERE location IS NOT NULL
             ORDER BY location
         `);
-        // renvoie un tableau de strings
-        const cities = result.rows.map(r => r.location);
-        res.json(cities);
-    } catch (error) {
-        console.error("Erreur SQL cities:", error);
-        res.status(500).json({ error: error.message });
-    }
+    // renvoie un tableau de strings
+    const cities = result.rows.map(r => r.location);
+    res.json(cities);
+  } catch (error) {
+    console.error("Erreur SQL cities:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Liste des villes
@@ -108,7 +108,23 @@ app.get("/stats/overview", async (req, res) => {
   }
 });
 
+// Ajouter un bénévole
+app.post("/volunteers", async (req, res) => {
+  try {
+    const { name, city } = req.body;
+    if (!name || !city) {
+      return res.status(400).json({ error: "Nom et ville sont requis" });
+    }
+    const result = await pool.query('INSERT INTO volunteers (name, city) VALUES ($1, $2) RETURNING *', [name, city]);
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Erreur SQL add volunteer:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Démarrer le serveur
 app.listen(3000, () => {
-  console.log("🚀 Serveur lancé sur http://localhost:3000");
+  console.log(" Serveur lancé sur http://localhost:3000");
 });
