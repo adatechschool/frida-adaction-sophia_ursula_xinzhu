@@ -260,6 +260,88 @@ app.get("/my_collection/:id/:location/:date", async (req, res) => {
 });
 
 
+// Liste des villes présentes dans les collections
+app.get("/cities", async (req, res) => {
+  try {
+    const result = await pool.query(`
+            SELECT DISTINCT location
+            FROM collections
+            WHERE location IS NOT NULL
+            ORDER BY location
+        `);
+    // renvoie un tableau de strings
+    const cities = result.rows.map(r => r.location);
+    res.json(cities);
+  } catch (error) {
+    console.error("Erreur SQL cities:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Liste des villes
+app.get("/stats/overview", async (req, res) => {
+  try {
+    const { location, date } = req.query;
+    const params = [];
+    let where = "WHERE 1=1";
+
+    if (date) {
+      params.push(date);
+      where += ` AND DATE(c."collection_date") = $${params.length}`;
+    }
+
+    if (location) {
+      params.push(location);
+      where += ` AND c.location = $${params.length}`;
+    }
+    // Total global ou filtré
+    const totalQuery = `
+      SELECT SUM(q.quantity) AS total
+      FROM quantities q
+      JOIN collections c ON q.collection_id = c.id
+      ${where}
+    `;
+    const totalResult = await pool.query(totalQuery, params);
+    // Total par catégorie
+    const categoriesQuery = `
+      SELECT cat.name, SUM(q.quantity) AS total
+      FROM quantities q
+      JOIN categories cat ON q.category_id = cat.id
+      JOIN collections c ON q.collection_id = c.id
+      ${where}
+      GROUP BY cat.name
+    `;
+    const categoriesResult = await pool.query(categoriesQuery, params);
+    res.json({
+      total: totalResult.rows[0]?.total ? Number(totalResult.rows[0].total) : 0,
+      categories: categoriesResult.rows.map(r => ({
+        name: r.name,
+        total: r.total ? Number(r.total) : 0
+      }))
+    });
+
+  } catch (error) {
+    console.error("Erreur SQL overview:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Ajouter un bénévole
+app.post("/volunteers", async (req, res) => {
+  try {
+    const { name, city } = req.body;
+    if (!name || !city) {
+      return res.status(400).json({ error: "Nom et ville sont requis" });
+    }
+    const result = await pool.query('INSERT INTO volunteers (name, city) VALUES ($1, $2) RETURNING *', [name, city]);
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Erreur SQL add volunteer:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.listen(3000, () => {
   console.log(`✅ Serveur lancé sur http://localhost:${port}`);
 });
