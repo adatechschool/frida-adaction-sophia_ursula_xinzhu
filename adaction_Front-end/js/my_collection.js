@@ -38,44 +38,52 @@ const getData = async (id) => {
 const loadData = async (result) => {
   const total = document.querySelector("#total");
   const container = document.querySelector(".container");
+  const errorMsg = document.querySelector("#errorMsg");
   try {
     const data = await result;
-    total.innerHTML = `${data[0].volunteer_name} a effectué ${data[0].total_global} collectes au total ! `;
-    container.innerHTML = "";
-    for (const item of data) {
-      container.innerHTML += `
+    if (data.length === 0) {
+      errorMsg.innerHTML = "";
+      errorMsg.innerHTML = "Auncune collecte trouvée.";
+      total.innerHTML = "";
+      container.innerHTML = "";
+    } else {
+      errorMsg.innerHTML="";
+      total.innerHTML = `${data[0].volunteer_name} a effectué ${data[0].total_global} collectes au total ! `;
+      container.innerHTML = "";
+      for (const item of data) {
+        container.innerHTML += `
     <h3>${item.category_name}</h3>
     <h3>${item.total_by_category}</h3>`;
+      }
     }
   } catch (error) {
     console.error("Problème de connexion au serveur", error);
   }
 };
 loadData(getData(id));
-//déclencheur du bouton search 
-document.querySelector("#collections-search").addEventListener("click",()=>{
+//déclencheur du bouton search
+document.querySelector("#collections-search").addEventListener("click", () => {
   const location = document.querySelector("#citySelect").value;
   const date = document.querySelector("#collections-date").value;
-  console.log(date)
-  loadData(getFilteredData(id,location,date))
-})
+  console.log(date);
+  loadData(getFilteredData(id, location, date));
+});
 //fonction pour récupérer les stats filtrés
 const getFilteredData = async (id, location, date) => {
   try {
-    if (date === ""){
-      date = "All"
+    if (date === "") {
+      date = "All";
     }
     const response = await fetch(
       `${API_URL}/my_collection/${id}/${location}/${date}`
     );
     const data = await response.json();
     return data;
-
   } catch (error) {
     console.error("Problème de connexion au serveur", error);
   }
 };
 //bouton reset
-document.querySelector("#reset").addEventListener("click",()=>{
+document.querySelector("#reset").addEventListener("click", () => {
   loadData(getData(id));
-})
+});

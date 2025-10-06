@@ -10,7 +10,8 @@ const loadCategories = async () => {
     container.innerHTML = "";
     for (const item of data) {
       container.innerHTML += `<div class="categoryCard">
-      <h2>${item.name}</h2>
+      <h2>${item.icon}</h2>
+      <h3>${item.name}</h3>
       <div class="qtyContainer">
         <div class="btn sub"> - </div>
         <input class="qty" placeholder="0">
