@@ -107,6 +107,7 @@ function addInlineEditing() {
             });
             await displayVolunteers();
             await loadCities();
+            messageEdit()
           } catch (err) {
             console.error("Erreur modification inline:", err)
           }
@@ -117,14 +118,27 @@ function addInlineEditing() {
       e.target.addEventListener("click", saveChanges, { once: true })
 
       // Sauvegarde à la sortie de l'input (blur)
-      nameInput.addEventListener("blur", saveChanges, { once: true })
-      cityInput.addEventListener("blur", saveChanges, { once: true })
+      // nameInput.addEventListener("blur", saveChanges, { once: true })
+      // cityInput.addEventListener("blur", saveChanges, { once: true })
 
-      // Sauvegarde à la touche Entrée
-      nameInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
-      cityInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
+      // // Sauvegarde à la touche Entrée
+      // nameInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
+      // cityInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
     });
   });
+}
+
+function messageEdit(){
+  document.getElementById("deleteModal").style.display = "block";
+  const confirmButton = document.getElementById('confirmDelete')
+  const cancelButton = document.getElementById('cancelDelete')
+  const message = document.getElementById('message')
+
+  confirmButton.style.display = "none"
+  cancelButton.style.display = "none"
+
+  message.innerHTML = ""
+  message.innerText = 'modifications enregistrées avec succée'
 }
 
 //& Supprimer un Bénévole
@@ -149,13 +163,26 @@ function closeModal() {
   deleteId = null;
 }
 
+function messageDeleted(){
+  document.getElementById("deleteModal").style.display = "block";
+  const confirmButton = document.getElementById('confirmDelete')
+  const cancelButton = document.getElementById('cancelDelete')
+  const message = document.getElementById('message')
+
+  confirmButton.style.display = "none"
+  cancelButton.style.display = "none"
+
+  message.innerHTML = ""
+  message.innerText = 'bénévole supprimé avec succés'
+}
+
 document.getElementById("confirmDelete").addEventListener("click", async () => {
   if (!deleteId) return;
   try {
     await fetch(`${API_URL}/volunteers/${deleteId}`,
       { method: "DELETE" });
     await displayVolunteers();
-    closeModal();
+    messageDeleted()
   } catch (err) {
     console.error("Erreur suppression:", err);
   }
