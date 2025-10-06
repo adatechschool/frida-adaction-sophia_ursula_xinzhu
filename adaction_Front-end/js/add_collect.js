@@ -27,9 +27,10 @@ const loadCategories = async () => {
 };
 loadCategories();
 //fonction qui permet de collecter tous les input nécessaire pour un post createCollection
+const userId = localStorage.getItem("userId");
+console.log(userId)
 const getUserInput = () => {
   document.querySelector("#add").addEventListener("click", () => {
-    const name = document.querySelector("#name").value;
     const location = document.querySelector("#city").value;
     const date = document.querySelector("#date").value;
     const quantities = document.querySelectorAll(".qty");
@@ -40,17 +41,17 @@ const getUserInput = () => {
     let newArr = quantityArr.map(Number);
     console.log(newArr);
 
-    createCollection(name, date, location, newArr);
+    createCollection(date, location, newArr);
   });
 };
 
-const createCollection = async (name, date, location, arr) => {
+const createCollection = async (date, location, arr) => {
   try {
     const response = await fetch(`${API_URL}/add_collection`, {
       method: "POST",
       headers: { "Content-Type": "application/json" }, //! je précise au serveur que je vais envoyer les data en fromat json
       body: JSON.stringify({
-        volunteers_name: name,
+        volunteers_id: userId,
         collections_date: date,
         collections_location: location,
         quantities: arr,
