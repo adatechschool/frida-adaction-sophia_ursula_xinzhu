@@ -25,109 +25,6 @@ app.get("/volunteers", async (req, res) => {
 });
 
 
-
-
-app.listen(3000, () => {
-  console.log("Serveur lancé sur http://localhost:3000");
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //🚀route pour récupérer toutes les catégories déchets
 app.get("/categories", async (req, res) => {
   try {
@@ -273,10 +170,14 @@ app.get("/my_collection/:id/:location/:date", async (req, res) => {
       [id, date, location]
 
     );
-    await pool
     res.json(result.rows);
   } catch (error) {
     console.error("Erreur lors de la récupération de la collection:", error);
     res.status(500).json({ error: "Erreur serveur" });
   }
+});
+
+
+app.listen(3000, () => {
+  console.log("Serveur lancé sur http://localhost:3000");
 });
