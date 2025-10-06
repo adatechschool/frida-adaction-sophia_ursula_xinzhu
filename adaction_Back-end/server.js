@@ -29,7 +29,7 @@ app.get("/volunteers", async (req, res) => {
 //🚀route pour récupérer toutes les catégories déchets
 app.get("/categories", async (req, res) => {
   try {
-    const result = await pool.query("SELECT name from categories ORDER BY id");
+    const result = await pool.query("SELECT name, icon from categories ORDER BY id");
     res.json(result.rows);
   } catch (error) {
     console.log(error);
