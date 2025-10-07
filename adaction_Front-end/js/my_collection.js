@@ -1,24 +1,39 @@
 const API_URL = "http://localhost:3000";
 
-let paremString = window.location.search;                                      
-let searchParams = new URLSearchParams(paremString);   
-let userName = searchParams.get("user") ;
+let paremString = window.location.search;
+let searchParams = new URLSearchParams(paremString);
+let userName = searchParams.get("user");
 
+//si le username vient de l'url, on le sauvegarde
+if (userName) {
+  localStorage.setItem("user", userName);
+//sinon on le récupère du localstorage : le cas de retour à ce page depuis page add_collect
+} else {
+  userName = localStorage.getItem("user");
+}
 
 
 //fonction pour récupérer id du bénévole à partir du name input
-async function getUserId(name){
+async function getUserId(name) {
   try {
-    const res = await fetch(`${API_URL}/volunteers/${name}`)
-    const id = await res.json()
+    const res = await fetch(`${API_URL}/volunteers/${name}`);
+    const id = await res.json();
     return id;
   } catch (error) {
     console.error("Erreur getUserId:", error);
   }
 }
-const id = await getUserId(userName);
-localStorage.setItem("userId",id);
-console.log(id)
+//récupérer userId du localstorage
+let userId = localStorage.getItem("userId");
+let id;
+if (userId) {
+  id = userId;
+} else {
+  const id = await getUserId(storedUser);
+  localStorage.setItem("userId", id);
+}
+
+console.log(id);
 
 //fonction pour implanter la liste des locations dans select options
 async function loadLocations(id) {
@@ -65,7 +80,7 @@ const loadData = async (result) => {
       total.innerHTML = "";
       container.innerHTML = "";
     } else {
-      errorMsg.innerHTML="";
+      errorMsg.innerHTML = "";
       total.innerHTML = `Vous avez effectué ${data[0].total_global} collectes au total ! `;
       container.innerHTML = "";
       for (const item of data) {
