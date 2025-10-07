@@ -29,7 +29,7 @@ let id;
 if (userId) {
   id = userId;
 } else {
-  const id = await getUserId(storedUser);
+  const id = await getUserId(userName);
   localStorage.setItem("userId", id);
 }
 
