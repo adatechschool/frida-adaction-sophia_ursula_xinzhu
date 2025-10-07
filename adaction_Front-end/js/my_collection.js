@@ -18,7 +18,7 @@ async function getUserId(name){
 }
 const id = await getUserId(userName);
 localStorage.setItem("userId",id);
-
+console.log(id)
 
 //fonction pour implanter la liste des locations dans select options
 async function loadLocations(id) {

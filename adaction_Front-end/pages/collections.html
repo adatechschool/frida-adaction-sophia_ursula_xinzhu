@@ -1,42 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script type="module" src="../js/collections.js" defer></script>
-    <link rel="stylesheet" href="../css/collections.css">
-</head>
+    <link rel="stylesheet" href="../css/collections.css" />
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <div class="search-bar">
-            <label for="collections-city">Localisation</label>
-            <select id="cities">
-            </select>
+      <div class="search-bar">
+        <label for="collections-city">Localisation</label>
+        <select id="cities"></select>
 
-            <label for="date">Date</label>
-            <input type="date" id="collections-date">
-            <button id="collections-search">🔍</button>
+        <label for="date">Date</label>
+        <input type="date" id="collections-date" />
+        <button id="collections-search">🔍</button>
+      </div>
+      <div class="display-area">
+        <div class="results">
+          <h3>Résultats</h3>
+
+          <div class="categories-display">
+            <h4>Collectes par catégorie</h4>
+            <ul id="categories-list"></ul>
+          </div>
+
+          <div class="total-display">
+            <h4>Total collecté</h4>
+            <span id="total-value"></span>
+          </div>
         </div>
-        <div class="display-area">
-            <div class="results">
-                <h3>Résultats</h3>
-
-                <div class="categories-display">
-                    <h4>Collectes par catégorie</h4>
-                    <ul id="categories-list"></ul>
-                </div>
-
-                <div class="total-display">
-                    <h4>Total collecté</h4>
-                    <span id="total-value"></span>
-                </div>
-            </div>
-
-        </div>
+      </div>
     </div>
-</body>
-
+    <div class="navBar">
+      <a href="../pages/landingpage.html">Home</a>
+      <a href="../volunteers.html">People</a>
+      <a href="#">Stats</a>
+    </div>
+  </body>
 </html>
