@@ -15,40 +15,128 @@ header {
     justify-content: center;
     align-items: center;
 
-    .logo > h1 > span{
-        color: green;  
+    .logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 1.5rem;
+
+
+        span {
+            color: green;
+        }
+
+        p {
+            font-size: 1rem;
+            text-align: center;
+        }
+
     }
 
 }
 
 main {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 80vh;
 
     .link-btn {
         display: flex;
+        flex-wrap: wrap;
         flex-direction: column;
         align-items: center;
-        width: 50%;
+        gap: 1rem;
 
         a {
+            overflow: hidden;
             text-decoration: none;
+            text-align: center;
             background-color: rgb(255, 255, 255);
             border-radius: 1rem;
+            border: 1px solid black;
+            color: inherit;
 
             padding: 0.5rem;
             width: 50vw;
+
+            &:hover {
+                background-color: black;
+                color: white;
+            }
         }
-        .volunteer{
+
+        #volunteer {
+            border-radius: 1rem;
+            padding: auto;
+            width: 50vw;
+            padding: 0.5rem;
+            border: 1px solid black;
+            cursor: pointer;
+
+            &:hover {
+                background-color: black;
+                color: white;
+            }
+        }
+    }
+
+    #form-box {
+        position: absolute;
+        top: 60%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        width: 60vw;
+        text-align: center;
+        padding: 2rem;
+        background-color: antiquewhite;
+        border-radius: 1rem;
+        border: 1px solid black;
+        display: none;
+
+        input {
+            width: 50vw;
+            padding: 0.5rem;
+            border: 1px solid black;
+        }
+
+        #submit {
+            border-radius: 1rem;
+            padding: auto;
+            width: 50vw;
+            padding: 0.5rem;
+            border: 1px solid black;
+            cursor: pointer;
+
+            &:hover {
+                background-color: black;
+                color: white;
+            }
 
         }
+/* 
+        #user {
+            display: none;
+        }
+
+        #submit {
+            display: none;
+        } */
+
     }
 }
 
-
-
-#user {
-    display: none;
-}
-
-#submit {
-    display: none;
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
