@@ -1,0 +1,61 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/*!bar de recherche*/
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: 2rem;
+  margin: 2rem;
+  width: 80%;
+  border-radius: 8px;
+  margin-inline: auto;
+  gap: 1rem;
+  align-items: end;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    label {
+      font-weight: 600;
+      color: #444;
+    }
+
+    #citySelect,
+    #collections-date {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus {
+      border-color: #97b181;
+      box-shadow: 0 0 5px rgba(151, 177, 129, 0.4);
+      outline: none;
+    }
+  }
+}
+button {
+  background-color: #97b181; /* bleu */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  min-width: 120px;
+  max-height: 40px;
+}
+
+button:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+    background-color: #8ca873;
+}

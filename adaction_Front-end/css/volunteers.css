@@ -48,7 +48,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-/*bar de recherche*/
+/*!bar de recherche*/
 .search-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
