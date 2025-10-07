@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,24 @@
     <link rel="stylesheet" href="../css/landingpage.css">
     <script type="module" defer src="../js/landingpage.js"></script>
 </head>
+
 <body>
-    <h1>Adaction</h1>
-    <a href="../volunteers.html">Vous êtes administrateur</a>
-    <button id="volunteer">Vous êtes bénévole</button>
-    <form action="../pages/my_collection.html" methode="GET" id="form"> 
-        <input id ="user" name="user" placeholder="Rentrer votre nom." required>
-        <button id = "submit">Confirmer</button>
-    </form>
+    <header>
+        <div class="logo">
+            <h1>Ad<span>action</span></h1> 
+        </div>
+    </header>
+    <main>
+        <div class="link-btn">
+            <a href="../volunteers.html"> Administrateur</a>
+            <button id="volunteer">Bénévole</button>
+            <form action="../pages/my_collection.html" methode="GET" id="form">
+                <input id="user" name="user" placeholder="Rentrer votre nom." required>
+                <button id="submit">Confirmer</button>
+            </form>
+        </div>
+    </main>
 
 </body>
+
 </html>
