@@ -1,5 +1,14 @@
 const API_URL = "http://localhost:3000";
 
+const resetButton = document.getElementById('reset-btn');
+
+resetButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  document.getElementById("name-input").value = "";
+  document.getElementById("citySelect").value = ""; 
+  displayVolunteers(); 
+});
+
 //& Récupérer tous les bénévoles
 async function fetchVolunteers() {
   try {
@@ -70,7 +79,7 @@ async function displayVolunteers(volunteers = null) {
 
 function addInlineEditing() {
   document.querySelectorAll(".edit-btn").forEach(btn => {
-    
+
     btn.addEventListener("click", (e) => {
       const profilBox = e.target.closest(".profil-box");
       const id = e.target.dataset.id;
@@ -107,7 +116,7 @@ function addInlineEditing() {
             });
             await displayVolunteers();
             await loadCities();
-            messageEdit()
+            showMessageModal('modifications enregistrées avec succée')
           } catch (err) {
             console.error("Erreur modification inline:", err)
           }
@@ -117,29 +126,13 @@ function addInlineEditing() {
       // Sauvegarde au clic sur le bouton
       e.target.addEventListener("click", saveChanges, { once: true })
 
-      // Sauvegarde à la sortie de l'input (blur)
-      // nameInput.addEventListener("blur", saveChanges, { once: true })
-      // cityInput.addEventListener("blur", saveChanges, { once: true })
-
-      // // Sauvegarde à la touche Entrée
+      // Sauvegarde à la touche Entrée
       // nameInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
       // cityInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
     });
   });
 }
 
-function messageEdit(){
-  document.getElementById("deleteModal").style.display = "block";
-  const confirmButton = document.getElementById('confirmDelete')
-  const cancelButton = document.getElementById('cancelDelete')
-  const message = document.getElementById('message')
-
-  confirmButton.style.display = "none"
-  cancelButton.style.display = "none"
-
-  message.innerHTML = ""
-  message.innerText = 'modifications enregistrées avec succée'
-}
 
 //& Supprimer un Bénévole
 
@@ -155,7 +148,17 @@ function deleteVolunteers() {
 }
 
 function openModal() {
-  document.getElementById("deleteModal").style.display = "block";
+  const modal = document.getElementById("deleteModal");
+  const confirmButton = document.getElementById('confirmDelete');
+  const cancelButton = document.getElementById('cancelDelete');
+  const message = document.getElementById('message');
+
+
+  confirmButton.style.display = "inline-block";
+  cancelButton.style.display = "inline-block";
+  message.innerText = 'Êtes-vous sûr de vouloir supprimer ce bénévole ?';
+
+  modal.style.display = "block";
 }
 
 function closeModal() {
@@ -163,18 +166,20 @@ function closeModal() {
   deleteId = null;
 }
 
-function messageDeleted(){
-  document.getElementById("deleteModal").style.display = "block";
-  const confirmButton = document.getElementById('confirmDelete')
-  const cancelButton = document.getElementById('cancelDelete')
-  const message = document.getElementById('message')
+function showMessageModal(messageText) {
+  const modal = document.getElementById("deleteModal");
+  const confirmButton = document.getElementById('confirmDelete');
+  const cancelButton = document.getElementById('cancelDelete');
+  const message = document.getElementById('message');
 
-  confirmButton.style.display = "none"
-  cancelButton.style.display = "none"
+  modal.style.display = "block";
+  confirmButton.style.display = "none";
+  cancelButton.style.display = "none";
 
-  message.innerHTML = ""
-  message.innerText = 'bénévole supprimé avec succés'
+  message.innerHTML = "";
+  message.innerText = messageText;
 }
+
 
 document.getElementById("confirmDelete").addEventListener("click", async () => {
   if (!deleteId) return;
@@ -182,7 +187,8 @@ document.getElementById("confirmDelete").addEventListener("click", async () => {
     await fetch(`${API_URL}/volunteers/${deleteId}`,
       { method: "DELETE" });
     await displayVolunteers();
-    messageDeleted()
+
+    showMessageModal('bénévole supprimé avec succés')
   } catch (err) {
     console.error("Erreur suppression:", err);
   }

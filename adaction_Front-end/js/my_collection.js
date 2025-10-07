@@ -1,6 +1,24 @@
 const API_URL = "http://localhost:3000";
 
-let id = 1;
+let paremString = window.location.search;                                      
+let searchParams = new URLSearchParams(paremString);   
+let userName = searchParams.get("user") ;
+
+
+
+//fonction pour récupérer id du bénévole à partir du name input
+async function getUserId(name){
+  try {
+    const res = await fetch(`${API_URL}/volunteers/${name}`)
+    const id = await res.json()
+    return id;
+  } catch (error) {
+    console.error("Erreur getUserId:", error);
+  }
+}
+const id = await getUserId(userName);
+localStorage.setItem("userId",id);
+console.log(id)
 
 //fonction pour implanter la liste des locations dans select options
 async function loadLocations(id) {
@@ -33,7 +51,7 @@ const getData = async (id) => {
     console.error("Problème de connexion au serveur", error);
   }
 };
-// getData(id);
+getData(id);
 //fonction pour afficher les stats
 const loadData = async (result) => {
   const total = document.querySelector("#total");
@@ -48,11 +66,12 @@ const loadData = async (result) => {
       container.innerHTML = "";
     } else {
       errorMsg.innerHTML="";
-      total.innerHTML = `${data[0].volunteer_name} a effectué ${data[0].total_global} collectes au total ! `;
+      total.innerHTML = `Vous avez effectué ${data[0].total_global} collectes au total ! `;
       container.innerHTML = "";
       for (const item of data) {
         container.innerHTML += `
     <h3>${item.category_name}</h3>
+    <h3>${item.category_icon}</h3>
     <h3>${item.total_by_category}</h3>`;
       }
     }

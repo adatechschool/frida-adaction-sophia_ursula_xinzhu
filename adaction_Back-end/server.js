@@ -5,11 +5,10 @@ import { Pool } from "pg";
 
 dotenv.config();
 const app = express();
-const port = 3000
+const port = 3000;
 
 app.use(express.json());
 app.use(cors({ origin: "http://127.0.0.1:5500" }));
-
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -31,7 +30,9 @@ app.get("/volunteers", async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération des bénévoles" });
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des bénévoles" });
   }
 });
 
@@ -61,18 +62,22 @@ app.get("/volunteers/search", async (req, res) => {
 //& Récupérer les villes distinctes:
 app.get("/cities", async (req, res) => {
   try {
-    const result = await pool.query("SELECT DISTINCT city FROM volunteers ORDER BY city ASC");
+    const result = await pool.query(
+      "SELECT DISTINCT city FROM volunteers ORDER BY city ASC"
+    );
     res.json(result.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération des villes" });
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des villes" });
   }
 });
 
 //& Modifier le nom et la ville du bénévole:
 app.put("/volunteers/:id", async (req, res) => {
-  const { id } = req.params;         
-  const { name, city } = req.body;   
+  const { id } = req.params;
+  const { name, city } = req.body;
 
   try {
     const result = await pool.query(
@@ -84,33 +89,43 @@ app.put("/volunteers/:id", async (req, res) => {
       return res.status(404).json({ error: "Bénévole introuvable" });
     }
 
-    res.json({ message: "Bénévole modifié avec succès", volunteer: result.rows[0] });
+    res.json({
+      message: "Bénévole modifié avec succès",
+      volunteer: result.rows[0],
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erreur lors de la modification du bénévole" });
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la modification du bénévole" });
   }
 });
-
 
 //& Supprimer un bénévole:
 app.delete("/volunteers/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query("DELETE FROM volunteers WHERE id = $1", [id]);
+    const result = await pool.query("DELETE FROM volunteers WHERE id = $1", [
+      id,
+    ]);
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "Bénévole introuvable" });
     }
     res.json({ message: "Bénévole supprimé avec succès" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erreur lors de la suppression du bénévole" });
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la suppression du bénévole" });
   }
 });
 
 //🚀route pour récupérer toutes les catégories déchets
 app.get("/categories", async (req, res) => {
   try {
-    const result = await pool.query("SELECT name, icon from categories ORDER BY id");
+    const result = await pool.query(
+      "SELECT name, icon from categories ORDER BY id"
+    );
     res.json(result.rows);
   } catch (error) {
     console.log(error);
@@ -121,33 +136,18 @@ app.get("/categories", async (req, res) => {
 app.post("/add_collection", async (req, res) => {
   console.log("[POST/collection] body reçu:", req.body);
   const {
-    volunteers_name,
+    volunteers_id,
     collections_date,
     collections_location,
     quantities,
-  } = req.body; 
+  } = req.body;
   try {
-    //récupérer le id du volunteer
-    const volunteerResult = await pool.query(
-      "SELECT id from volunteers WHERE name = $1",
-      [volunteers_name]
-    );
-    console.log("volunteerResult", volunteerResult.rows);
-
-    if (volunteerResult.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ ok: false, message: "Bénévole non trouvé." });
-    }
-
-    const volunteer_id = volunteerResult.rows[0].id;
-
     // insérer la collecte dans collections
     const insertCollection = await pool.query(
       "INSERT INTO collections\
 	(volunteer_id, collection_date, location)\
 	VALUES ($1,$2,$3) RETURNING id",
-      [volunteer_id, collections_date, collections_location]
+      [volunteers_id, collections_date, collections_location]
     );
     const collection_id = insertCollection.rows[0].id;
     console.log(collection_id);
@@ -156,13 +156,11 @@ app.post("/add_collection", async (req, res) => {
     const categoryIds = getIds.rows;
     console.log(categoryIds);
     if (categoryIds.length !== quantities.length) {
-      return res
-        .status(400)
-        .json({
-          OK: false,
-          message:
-            "Le nombre de quantités ne correspond pas au nombre de catégpries exsistantes",
-        });
+      return res.status(400).json({
+        OK: false,
+        message:
+          "Le nombre de quantités ne correspond pas au nombre de catégpries exsistantes",
+      });
     }
     //insérer des infos dans la table quantities
     for (let i = 0; i < categoryIds.length; i++) {
@@ -170,21 +168,43 @@ app.post("/add_collection", async (req, res) => {
       const qty = quantities[i];
       const insertQuantities = await pool.query(
         "INSERT INTO quantities (collection_id, category_id, quantity)\
-        VALUES ($1, $2, $3)",[collection_id, id, qty]
+        VALUES ($1, $2, $3)",
+        [collection_id, id, qty]
       );
-    };
+    }
 
     //*renvoyer un message alerte
     return res.status(201).json({
       ok: true,
-      message: `collecte ajoutée par ${volunteers_name}`,
+      message: `collecte ajoutée avec succès`,
     });
   } catch (error) {
     console.error("erreur lors de la création de la collecte", error);
   }
 });
 
-
+//route pour la page my_collection : récupérer id du bénévole
+app.get("/volunteers/:name", async (req, res) => {
+  try {
+    const name = req.params.name;
+    const result = await pool.query(
+      "SELECT id from volunteers WHERE name = $1",
+      [name]
+    );
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ ok: false, message: "Bénévole non trouvé." });
+    } else {
+      res.json(result.rows[0].id);
+    }
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération id du bénévole" });
+  }
+});
 //🚀 route pour la page my_collection: récupérer les localisations
 app.get("/locations/:id", async (req, res) => {
   try {
@@ -194,16 +214,19 @@ app.get("/locations/:id", async (req, res) => {
       FROM collections\
       JOIN volunteers ON volunteers.id = collections.volunteer_id\
       WHERE volunteers.id = $1\
-      ORDER BY location", [id]);
+      ORDER BY location",
+      [id]
+    );
     res.json(result.rows);
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération des villes" });
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la récupération des villes" });
   }
 });
 
-//🚀 route pour la page my_collection: affichage des stats 
+//🚀 route pour la page my_collection: affichage des stats
 app.get("/my_collection/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -212,6 +235,7 @@ app.get("/my_collection/:id", async (req, res) => {
         v.name AS volunteer_name,
         q.category_id,
         c.name AS category_name,
+        c.icon AS category_icon,
         SUM(q.quantity) AS total_by_category,
         SUM(SUM(q.quantity)) OVER (PARTITION BY v.id) AS total_global
       FROM quantities q
@@ -219,7 +243,7 @@ app.get("/my_collection/:id", async (req, res) => {
       JOIN volunteers v ON col.volunteer_id = v.id
       JOIN categories c ON c.id = q.category_id
       WHERE v.id = $1
-      GROUP BY v.name, q.category_id, c.name, v.id`,
+      GROUP BY v.name, q.category_id, c.name, c.icon, v.id`,
       [id]
     );
     res.json(result.rows);
@@ -228,19 +252,20 @@ app.get("/my_collection/:id", async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
-//🚀 route pour la page my_collection : search 
+//🚀 route pour la page my_collection : search
 
 app.get("/my_collection/:id/:location/:date", async (req, res) => {
   try {
     const id = Number(req.params.id);
     let location = req.params.location;
     let date = req.params.date;
-    
+
     const result = await pool.query(
       `SELECT
         v.name AS volunteer_name,
         q.category_id,
         c.name AS category_name,
+        c.icon AS category_icon,
         SUM(q.quantity) AS total_by_category,
         SUM(SUM(q.quantity)) OVER (PARTITION BY v.id) AS total_global
       FROM quantities q
@@ -248,9 +273,8 @@ app.get("/my_collection/:id/:location/:date", async (req, res) => {
       JOIN volunteers v ON col.volunteer_id = v.id
       JOIN categories c ON c.id = q.category_id
       WHERE v.id = $1 AND ( $2::text = 'All' OR col.collection_date = $2::date) AND (col.location=$3 OR $3 = 'All')
-      GROUP BY v.name, q.category_id, c.name, v.id`,
+      GROUP BY v.name, q.category_id, c.name, c.icon, v.id`,
       [id, date, location]
-
     );
     res.json(result.rows);
   } catch (error) {
@@ -258,7 +282,6 @@ app.get("/my_collection/:id/:location/:date", async (req, res) => {
     res.status(500).json({ error: "Erreur serveur" });
   }
 });
-
 
 // Liste des villes présentes dans les collections
 app.get("/cities", async (req, res) => {
@@ -270,7 +293,7 @@ app.get("/cities", async (req, res) => {
             ORDER BY location
         `);
     // renvoie un tableau de strings
-    const cities = result.rows.map(r => r.location);
+    const cities = result.rows.map((r) => r.location);
     res.json(cities);
   } catch (error) {
     console.error("Erreur SQL cities:", error);
@@ -314,12 +337,11 @@ app.get("/stats/overview", async (req, res) => {
     const categoriesResult = await pool.query(categoriesQuery, params);
     res.json({
       total: totalResult.rows[0]?.total ? Number(totalResult.rows[0].total) : 0,
-      categories: categoriesResult.rows.map(r => ({
+      categories: categoriesResult.rows.map((r) => ({
         name: r.name,
-        total: r.total ? Number(r.total) : 0
-      }))
+        total: r.total ? Number(r.total) : 0,
+      })),
     });
-
   } catch (error) {
     console.error("Erreur SQL overview:", error);
     res.status(500).json({ error: error.message });
@@ -333,7 +355,10 @@ app.post("/volunteers", async (req, res) => {
     if (!name || !city) {
       return res.status(400).json({ error: "Nom et ville sont requis" });
     }
-    const result = await pool.query('INSERT INTO volunteers (name, city) VALUES ($1, $2) RETURNING *', [name, city]);
+    const result = await pool.query(
+      "INSERT INTO volunteers (name, city) VALUES ($1, $2) RETURNING *",
+      [name, city]
+    );
 
     res.status(201).json(result.rows[0]);
   } catch (error) {
