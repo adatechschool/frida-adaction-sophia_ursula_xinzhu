@@ -327,20 +327,24 @@ app.get("/stats/overview", async (req, res) => {
     const totalResult = await pool.query(totalQuery, params);
     // Total par catégorie
     const categoriesQuery = `
-      SELECT cat.name, SUM(q.quantity) AS total
-      FROM quantities q
-      JOIN categories cat ON q.category_id = cat.id
-      JOIN collections c ON q.collection_id = c.id
-      ${where}
-      GROUP BY cat.name
+      SELECT cat.name, cat.icon, SUM(q.quantity) AS total
+FROM quantities q
+JOIN categories cat ON q.category_id = cat.id
+JOIN collections c ON q.collection_id = c.id
+${where}
+GROUP BY cat.name, cat.icon
+
     `;
     const categoriesResult = await pool.query(categoriesQuery, params);
+    console.log(categoriesResult.rows);
     res.json({
       total: totalResult.rows[0]?.total ? Number(totalResult.rows[0].total) : 0,
       categories: categoriesResult.rows.map((r) => ({
-        name: r.name,
-        total: r.total ? Number(r.total) : 0,
-      })),
+    name: r.name,
+    total: r.total ? Number(r.total) : 0,
+    icon: r.icon,
+})),
+
     });
   } catch (error) {
     console.error("Erreur SQL overview:", error);

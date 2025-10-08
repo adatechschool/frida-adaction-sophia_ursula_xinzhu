@@ -9,52 +9,48 @@ body{
   align-items: center;
   min-height: 100vh;
 }
+
 .grid{
   display:flex ;
  flex-direction: column;
   align-items: center;
   gap:20px;
-  padding: 20px;
+  padding: 8px 8px 40px;
   width: 100%;
+  max-width: 480px;
+ box-sizing: border-box;
  
 }
 .categoryCard{
-  display: grid;
-  grid-template-columns: 48px 1fr;      
-  grid-template-rows: auto auto;        
-  grid-template-areas:
-    "icon title"
-    "qty  qty";
-    align-items: center;
-    justify-items: start;
-  background-color: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 14px;
-  padding: 14px 16px;
-  width: 250px;
-   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  width: 65%;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e6e6e6;
+  padding: 12px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+}
+.categoryCard h2 ,h3 {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  line-height: 1;
 }
 .categoryCard h2 {
-  grid-area: icon;
-  margin: 0;
-  font-size: 32px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;    
-  height: 48px;
+ font-size: 30px;      
+  width: 44px;          
+  text-align: left;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .categoryCard h3 {
- grid-area: title;
-  margin: 0;
-  font-size: 16px;
+ font-size: 20px;
   font-weight: 600;
   color: #222;
-  text-align: left;   
-  align-self: center;
-  word-break: break-word;
+  display: inline-block;
+  vertical-align: middle;
+  max-width: calc(100% - 64px); 
 }
 .qtyContainer {
   display: flex;
@@ -65,16 +61,21 @@ body{
   overflow: hidden;
   width: 120px;
   height: 35px;
-  margin: 20px auto 0;
+ margin: 12px auto 0; 
+  box-sizing: border-box;
 }
 .btn {
-  background-color: #f2f2f2;
-  flex: 0 0 35px;
-  text-align: center;
+  flex: 0 0 44px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f4;
+  border: none;
   cursor: pointer;
   font-size: 18px;
   user-select: none;
-  transition: background 0.2s ease;
+  transition: background .12s;
 }
 
 .qty {
@@ -82,8 +83,9 @@ body{
   text-align: center;
   border: none;
   outline: none;
-  font-weight: 600;
+   font-weight: 700;
   font-size: 16px;
+  background: transparent;
 }
 #add {
   margin: 20px 0 100px;
@@ -94,6 +96,7 @@ body{
   border-radius: 10px;
   font-size: 16px;
   cursor: pointer;
+   font-size: 15px;
 }
 
 #add:hover {
