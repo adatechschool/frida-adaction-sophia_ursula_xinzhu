@@ -11,12 +11,17 @@
   <body>
     <div class="container">
       <div class="search-bar">
-        <label for="collections-city">Localisation</label>
-        <select id="cities"></select>
+        <div class="form-group">
+          <label for="collections-city">Localisation :</label>
+          <select id="cities"></select>
+        </div>
 
-        <label for="date">Date</label>
-        <input type="date" id="collections-date" />
-        <button id="collections-search">🔍</button>
+        <div class="form-group">
+          <label for="date">Date :</label>
+          <input type="date" id="collections-date" />
+        </div>
+
+        <button id="collections-search">Rechercher</button>
       </div>
       <div class="display-area">
         <div class="results">
