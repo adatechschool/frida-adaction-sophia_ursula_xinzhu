@@ -37,7 +37,7 @@
 .qtyContainer {
   width: 100px;
   height: 40px;
-  background-color: pink;
+  background-color: #ccc;
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -143,18 +143,19 @@ body{
 }
 #add {
   margin: 20px 0 100px;
-  background-color: #0e7b57;
+  background-color:#97b181;
   color: white;
   border: none;
   padding: 12px 20px;
-  border-radius: 10px;
+  border-radius: 2rem;
   font-size: 16px;
   cursor: pointer;
    font-size: 15px;
 }
 
 #add:hover {
-  background-color: #0c694a;
+  transform: translateY(-3px);
+    background-color: #8ca873;
 }
 .navBar{
     position : fixed;
