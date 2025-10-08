@@ -15,25 +15,24 @@ if (userName) {
 
 
 //fonction pour récupérer id du bénévole à partir du name input
+let id = 0;
 async function getUserId(name) {
   try {
     const res = await fetch(`${API_URL}/volunteers/${name}`);
     const data = await res.json();
-    console.log(data);
+    const idData = data.id
+    return idData;
   } catch (error) {
     console.error("Erreur getUserId:", error);
   }
 }
-await getUserId(userName);
-//récupérer userId du localstorage
-
-let id = localStorage.getItem("userId");
-
+id = localStorage.getItem("userId");
 if (!id) {
   id = await getUserId(userName);
 }
+console.log(id)
+//récupérer userId du localstorage
 
-console.log(id);
 
 //fonction pour implanter la liste des locations dans select options
 async function loadLocations(id) {
@@ -121,4 +120,4 @@ const getFilteredData = async (id, location, date) => {
 //bouton reset
 document.querySelector("#reset").addEventListener("click", () => {
   loadData(getData(id));
-});
+})

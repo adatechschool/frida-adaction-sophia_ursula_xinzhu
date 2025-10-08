@@ -196,7 +196,7 @@ app.get("/volunteers/:name", async (req, res) => {
         .status(404)
         .json({ ok: false, message: "Bénévole non trouvé." });
     } else {
-      res.json(result.rows[0]);
+      res.json({id:result.rows[0].id});
     }
   } catch (error) {
     console.error(error);
