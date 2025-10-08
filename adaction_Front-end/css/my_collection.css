@@ -64,6 +64,41 @@ margin:0;
 padding:0;
 box-sizing: border-box;
 }
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+.collect-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  padding: 1rem 0.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.collect-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+}
+
+.collect-card h3 {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+.collect-card p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+.collect-card span {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
 .navBar{
     position : fixed;
     bottom: 0;

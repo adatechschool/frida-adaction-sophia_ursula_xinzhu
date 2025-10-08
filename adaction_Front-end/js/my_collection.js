@@ -84,9 +84,12 @@ const loadData = async (result) => {
       container.innerHTML = "";
       for (const item of data) {
         container.innerHTML += `
-    <h3>${item.category_name}</h3>
-    <h3>${item.category_icon}</h3>
-    <h3>${item.total_by_category}</h3>`;
+       <div class=" collect-card">
+      <span>${item.category_icon}</span>
+      <h3>${item.category_name}</h3>
+      <p>${item.total_by_category} collectés</p>
+    </div>
+     `;
       }
     }
   } catch (error) {
