@@ -72,7 +72,7 @@ function renderCategories(categories) {
         span.textContent = category.icon || '❓';
         li.appendChild(span);
 
-        const text = document.createTextNode(` ${category.name} ${category.total.toLocaleString()}`);
+        const text = document.createTextNode(` ${category.name} : ${category.total.toLocaleString()}`);
         li.appendChild(text);
         categoriesList.appendChild(li);
     });
