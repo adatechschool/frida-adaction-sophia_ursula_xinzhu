@@ -1,5 +1,9 @@
+
 const API_URL = "http://localhost:3000";
 
+//& Bouton reset (actualiser les données)
+
+function reset(){
 const resetButton = document.getElementById('reset-btn');
 
 resetButton.addEventListener("click", (e) => {
@@ -8,6 +12,7 @@ resetButton.addEventListener("click", (e) => {
   document.getElementById("citySelect").value = ""; 
   displayVolunteers(); 
 });
+}
 
 //& Récupérer tous les bénévoles
 async function fetchVolunteers() {
@@ -36,7 +41,7 @@ async function displayVolunteers(volunteers = null) {
 
   const data = volunteers || await fetchVolunteers();
   const container = document.getElementById("volunteers");
-  const addVolunteer = document.getElementById("addVolunteer");
+  const addVolunteer = document.getElementById("add-volunteer");
 
   container.innerHTML = "";
 
@@ -75,7 +80,7 @@ async function displayVolunteers(volunteers = null) {
   deleteVolunteers();
 }
 
-//& Inline Editing (champs input lorsque le bouton modifier(edit-btn) est cliqué)
+//& Inline Editing (champs input qui apparaît lorsque le bouton modifier(edit-btn) est cliqué)
 
 function addInlineEditing() {
   document.querySelectorAll(".edit-btn").forEach(btn => {
@@ -98,12 +103,12 @@ function addInlineEditing() {
       nameSpan.replaceWith(nameInput);
       citySpan.replaceWith(cityInput);
 
-      // Changer le bouton Modifier en Sauvegarder
+      //* Changer le bouton Modifier en Sauvegarder
       e.target.textContent = "Sauvegarder";
       e.target.classList.add("save-btn");
       e.target.classList.remove("edit-btn");
 
-      // Fonction pour envoyer les modifications au serveur
+      //* Fonction pour envoyer les modifications au serveur
       const saveChanges = async () => {
         const newName = nameInput.value.trim();
         const newCity = cityInput.value.trim();
@@ -123,10 +128,10 @@ function addInlineEditing() {
         }
       };
 
-      // Sauvegarde au clic sur le bouton
+      //* Sauvegarde au clic sur le bouton
       e.target.addEventListener("click", saveChanges, { once: true })
 
-      // Sauvegarde à la touche Entrée
+      //* Sauvegarde à la touche Entrée
       // nameInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
       // cityInput.addEventListener("keydown", (ev) => { if (ev.key === "Enter") saveChanges(); })
     });
@@ -146,6 +151,7 @@ function deleteVolunteers() {
     });
   });
 }
+
 
 function openModal() {
   const modal = document.getElementById("deleteModal");
@@ -202,6 +208,65 @@ window.addEventListener("click", e => {
     closeModal();
 });
 
+//& Ajouter un bénévole (partie Ursula)
+
+const volunteerForm = document.getElementById("volunteer-form");
+
+volunteerForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const volunteerName = document.getElementById("volunteerName").value.trim();
+    const volunteerCity = document.getElementById("volunteerCity").value.trim();
+
+    try {
+        const response = await fetch(`${API_URL}/volunteers/add`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: volunteerName, city: volunteerCity }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP : ${response.status}`);
+        }
+
+        const data = await response.json();
+        volunteerForm.reset();
+        await displayVolunteers();
+
+    } catch (error) {
+        console.error("Erreur lors de l'ajout du bénévole :", error);
+        alert("Échec de l'ajout du bénévole. Veuillez réessayer.");
+    }
+});
+
+//& Afficher modal d'ajout bénévole
+
+const volunteerModal = document.getElementById('add-volunteer_modal')
+const addVolunteer = document.getElementById("add-volunteer")
+const saveButton = document.getElementById('save-btn')
+const editButton = document.querySelectorAll('edit-btn')
+const deleteButton = document.querySelectorAll('delete-btn')
+const closeCross = document.getElementById('closeForm')
+
+
+  closeCross.addEventListener('click', () => {
+  volunteerModal.style.display = 'none '
+  addVolunteer.style.display = 'block'
+  })
+
+
+addVolunteer.addEventListener('click', () => {
+volunteerModal.style.display = 'block'
+addVolunteer.style.display = "none"
+editButton.disabled = true
+deleteButton.disabled = true
+})
+
+saveButton.addEventListener('click', () => {
+  volunteerModal.style.display = 'none'
+  showMessageModal('bénévole ajouté avec succée')
+})
+
 //& Rechercher les bénévoles selon la ville et le nom :
 
 document.querySelector(".search-form").addEventListener("submit", async e => {
@@ -242,6 +307,7 @@ async function loadCities() {
 
 await loadCities();
 await displayVolunteers();
+reset()
 
 
 

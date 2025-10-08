@@ -1,8 +1,59 @@
-/* *{
+*{
 margin:0;
 padding:0;
 box-sizing: border-box;
-} */
+}
+/*&____________________HERO-BANNER_______________*/
+
+.logo{
+
+    height: 30vh;
+
+    img{
+        width: 100%;
+        height: 100%;
+        background-position-x: center;
+    }
+   
+    
+}
+
+/*&__________________SEARCH-BAR_______________________*/
+
+.search-container{
+    display: flex;
+    align-items: center;
+    background-color: #e0812a;
+    border: 1px solid black;
+    height: 5vh;
+
+    .search-form{
+        display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+}
+
+/*&__________________Volunteers-List___________________*/
+
+.volunteers-container{
+    width: 300px;
+    height: 400px;
+    background-color: #e09855;
+    padding: 20px;
+    border-radius: 20px;
+    overflow: scroll;
+
+
+}
+
+#add-volunteer_modal{
+    display: none;
+}
+
+
+/*&________________________MODAL_____________________*/
+
 .modal {
     display: none;
     position: fixed;
@@ -49,8 +100,40 @@ box-sizing: border-box;
     }
 }
 
+#add-volunteer_modal{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+
+    width: 50vw;
+    padding: 1rem;
+    background-color: rgb(94, 135, 122);
+    border-radius: 0.5rem;
+
+
+    span{
+        display: flex;
+        cursor: pointer;
+    }
+
+  #volunteer-form{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    
+  }
+
+  #save-btn{
+   
+  }
+
+
+}
+
+/*&__________________Bottom_Nav-Bar___________________*/
 .navBar{
-    position : fixed;
+    /* position : fixed; */
     bottom: 0;
     left: 0;
     width: 100%;

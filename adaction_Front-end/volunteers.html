@@ -4,12 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Accueil</title>
+    <title>Volunteers</title>
+    <link rel="icon" type="image/x-icon" href="../adaction_Front-end/images/favicon48x48.svg">
     <script type="module" src="../adaction_Front-end/js/volunteers.js" defer></script>
     <link rel="stylesheet" href="../adaction_Front-end/css/volunteers.css" />
 </head>
 
 <body>
+    <div class="logo">
+        <img src="../adaction_Front-end/images/logo.svg" alt="">
+    </div>
     <div class="search-container">
         <form class="search-form">
             <div class="form-group">
@@ -25,11 +29,10 @@
             <button id="reset-btn">reset ↻</button>
         </form>
     </div>
-    <div id="volunteers"></div>
-    <a id="addVolunteer" href="pages/add_volunteer.html">
-        Créer un compte bénévole
-    </a>
-
+    <div class="volunteers-container">
+        <div id="volunteers"></div>
+        <button id="add-volunteer">Créer un compte bénévole </button>
+    </div>
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -38,6 +41,25 @@
                 <button id="confirmDelete">Supprimer</button>
                 <button id="cancelDelete">Annuler</button>
             </div>
+        </div>
+    </div>
+
+    <!--& partie Ursula -->
+     <div id="add-volunteer_modal">
+        <div id="closeForm">
+        <span >&times;</span>
+        </div>
+        <form id="volunteer-form">
+            <div class="formChild">
+            <Label for="name">Nom</Label>
+            <input type="text" id="volunteerName" placeholder="Nom" required>
+            </div>
+            <div class="formChild">
+            <label for="city">Ville</label>
+            <input type="text" id="volunteerCity" placeholder="Ville" required>
+            </div>
+            <button id="save-btn" type="submit">Enregistrer</button>
+        </form>
         </div>
     </div>
     <div class="navBar">
@@ -57,6 +79,7 @@
         <script>
             lucide.createIcons();
         </script>
+    </div>
 </body>
 
 </html>

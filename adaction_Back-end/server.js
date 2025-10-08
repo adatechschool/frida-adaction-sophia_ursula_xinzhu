@@ -349,7 +349,7 @@ app.get("/stats/overview", async (req, res) => {
 });
 
 // Ajouter un bénévole
-app.post("/volunteers", async (req, res) => {
+app.post("/volunteers/add", async (req, res) => {
   try {
     const { name, city } = req.body;
     if (!name || !city) {
