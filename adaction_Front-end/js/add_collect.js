@@ -28,7 +28,7 @@ const loadCategories = async () => {
 loadCategories();
 //fonction qui permet de collecter tous les input nécessaire pour un post createCollection
 const userId = localStorage.getItem("userId");
-console.log(userId)
+console.log(userId);
 const getUserInput = () => {
   document.querySelector("#add").addEventListener("click", () => {
     const location = document.querySelector("#city").value;

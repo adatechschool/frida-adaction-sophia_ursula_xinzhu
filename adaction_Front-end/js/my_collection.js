@@ -6,32 +6,32 @@ let userName = searchParams.get("user");
 console.log(userName)
 
 //si le username vient de l'url, on le sauvegarde
-if (userName) {
-  localStorage.setItem("user", userName);
-//sinon on le récupère du localstorage : le cas de retour à ce page depuis page add_collect
-} else {
-  userName = localStorage.getItem("user");
-}
+// if (userName) {
+//   localStorage.setItem("user", userName);
+// //sinon on le récupère du localstorage : le cas de retour à ce page depuis page add_collect
+// } else {
+//   userName = localStorage.getItem("user");
+// }
 
 
 //fonction pour récupérer id du bénévole à partir du name input
-let id = 0;
 async function getUserId(name) {
   try {
     const res = await fetch(`${API_URL}/volunteers/${name}`);
     const data = await res.json();
-    const idData = data.id
+    const idData = data.id;
     return idData;
   } catch (error) {
     console.error("Erreur getUserId:", error);
   }
 }
-id = localStorage.getItem("userId");
-if (!id) {
-  id = await getUserId(userName);
-}
+let id = await getUserId(userName);
+if(id){
+  localStorage.setItem("userId",id);
+}else{
+   id = localStorage.getItem("userId");
+ }
 console.log(id)
-//récupérer userId du localstorage
 
 
 //fonction pour implanter la liste des locations dans select options
