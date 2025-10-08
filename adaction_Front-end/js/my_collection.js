@@ -6,33 +6,33 @@ let userName = searchParams.get("user");
 console.log(userName)
 
 //si le username vient de l'url, on le sauvegarde
-if (userName) {
-  localStorage.setItem("user", userName);
-//sinon on le récupère du localstorage : le cas de retour à ce page depuis page add_collect
-} else {
-  userName = localStorage.getItem("user");
-}
+// if (userName) {
+//   localStorage.setItem("user", userName);
+// //sinon on le récupère du localstorage : le cas de retour à ce page depuis page add_collect
+// } else {
+//   userName = localStorage.getItem("user");
+// }
 
 
 //fonction pour récupérer id du bénévole à partir du name input
-let id = 0;
 async function getUserId(name) {
   try {
     const res = await fetch(`${API_URL}/volunteers/${name}`);
     const data = await res.json();
-    const idData = data.id
+    const idData = data.id;
     return idData;
   } catch (error) {
     console.error("Erreur getUserId:", error);
   }
 }
-id = localStorage.getItem("userId");
-if (!id) {
-  id = await getUserId(userName);
-  localStorage.setItem("userId", id);
-}
+let id = await getUserId(userName);
+if(id){
+  localStorage.setItem("userId",id);
+}else{
+   id = localStorage.getItem("userId");
+ }
 console.log(id)
-//récupérer userId du localstorage
+
 
 //fonction pour implanter la liste des locations dans select options
 async function loadLocations(id) {
@@ -84,9 +84,12 @@ const loadData = async (result) => {
       container.innerHTML = "";
       for (const item of data) {
         container.innerHTML += `
-    <h3>${item.category_name}</h3>
-    <h3>${item.category_icon}</h3>
-    <h3>${item.total_by_category}</h3>`;
+       <div class=" collect-card">
+      <span>${item.category_icon}</span>
+      <h3>${item.category_name}</h3>
+      <p>${item.total_by_category} collectés</p>
+    </div>
+     `;
       }
     }
   } catch (error) {
@@ -95,7 +98,8 @@ const loadData = async (result) => {
 };
 loadData(getData(id));
 //déclencheur du bouton search
-document.querySelector("#collections-search").addEventListener("click", () => {
+document.querySelector(".search-form").addEventListener("submit", (e) => {
+  e.preventDefault();
   const location = document.querySelector("#citySelect").value;
   const date = document.querySelector("#collections-date").value;
   console.log(date);
@@ -119,4 +123,4 @@ const getFilteredData = async (id, location, date) => {
 //bouton reset
 document.querySelector("#reset").addEventListener("click", () => {
   loadData(getData(id));
-});
+})

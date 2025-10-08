@@ -1,7 +1,103 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/*!bar de recherche*/
+.search-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  padding: 2rem;
+  margin: 2rem;
+  width: 80%;
+  border-radius: 8px;
+  margin-inline: auto;
+  gap: 1rem;
+  align-items: end;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    label {
+      font-weight: 600;
+      color: #444;
+    }
+
+    #citySelect,
+    #collections-date {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .form-group select:focus,
+    .form-group input:focus {
+      border-color: #97b181;
+      box-shadow: 0 0 5px rgba(151, 177, 129, 0.4);
+      outline: none;
+    }
+  }
+}
+button {
+  background-color: #97b181; /* bleu */
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  min-width: 120px;
+  max-height: 40px;
+}
+
+button:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+    background-color: #8ca873;
+}
 *{
 margin:0;
 padding:0;
 box-sizing: border-box;
+}
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+.collect-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  padding: 1rem 0.5rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+.collect-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+}
+
+.collect-card h3 {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+.collect-card p {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+.collect-card span {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
 }
 .navBar{
     position : fixed;
@@ -27,6 +123,9 @@ box-sizing: border-box;
     font-size: 0.8rem;
     gap: 0.2rem;
     transition:transform 0.2s ease, opacity 0.2s ease;
+    &.current{
+      color: #97b181;
+    }
 }
 .navBar a:hover {
   transform: translateY(-3px);

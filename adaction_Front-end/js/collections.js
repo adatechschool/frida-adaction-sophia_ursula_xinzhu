@@ -49,7 +49,8 @@ async function fetchOverview({ date, location } = {}) {
             total: data.total || 0,
             categories: data.categories?.map(c => ({
                 name: c.name,
-                total: Number(c.total) || 0
+                total: Number(c.total) || 0,
+                icon: c.icon 
             })) || []
         };
     } catch (error) {
@@ -64,8 +65,15 @@ function renderCategories(categories) {
         return;
     }
     categories.forEach(category => {
-        const li = document.createElement('li');
-        li.textContent = `${category.name}${category.total.toLocaleString()}`;
+       const li = document.createElement('li');
+
+       const span = document.createElement('span');
+        span.className = 'category-icon';
+        span.textContent = category.icon || '❓';
+        li.appendChild(span);
+
+        const text = document.createTextNode(` ${category.name} : ${category.total.toLocaleString()}`);
+        li.appendChild(text);
         categoriesList.appendChild(li);
     });
 }

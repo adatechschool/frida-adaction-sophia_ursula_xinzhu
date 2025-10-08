@@ -15,19 +15,19 @@
         <img src="../adaction_Front-end/images/logo.svg" alt="">
     </div>
     <div class="search-container">
-        <form class="search-form">
-            <div class="form-group">
-                <label for="location"> Localisation </label>
-                <select id="citySelect"></select>
-            </div>
-            <div class="form-group">
-                <label for="name"> Nom : </label>
-                <input type="text" id="name-input" placeholder="Entrer le nom" />
-            </div>
+      <form class="search-form">
+        <div class="form-group">
+          <label for="location"> Localisation : </label>
+          <select id="citySelect"></select>
+        </div>
+        <div class="form-group">
+          <label for="name"> Nom : </label>
+          <input type="text" id="name-input" placeholder="Entrer le nom" />
+        </div>
 
-            <button id="search-btn" type="submit">🔍</button>
-            <button id="reset-btn">reset ↻</button>
-        </form>
+        <button id="search-btn" type="submit">Rechercher</button>
+        <button id="reset-btn">Reset</button>
+      </form>
     </div>
     <div class="volunteers-container">
         <div id="volunteers"></div>
@@ -67,13 +67,13 @@
             <i data-lucide="home"></i>
             <span>Acceuil</span>
         </a>
-        <a href="#">
+        <a class="current" href="#">
             <i data-lucide="users"></i>
             <span>Volontaires</span>
         </a>
         <a href="pages/collections.html">
             <i data-lucide="chart-pie"></i>
-            <span>Stats</span>
+            <span>Collectes</span>
         </a>
         <script src="https://unpkg.com/lucide@latest"></script>
         <script>
