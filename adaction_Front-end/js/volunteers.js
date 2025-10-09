@@ -244,8 +244,6 @@ volunteerForm.addEventListener("submit", async (event) => {
 const volunteerModal = document.getElementById('add-volunteer_modal')
 const addVolunteer = document.getElementById("add-volunteer")
 const saveButton = document.getElementById('save-btn')
-const editButton = document.querySelectorAll('edit-btn')
-const deleteButton = document.querySelectorAll('delete-btn')
 const closeCross = document.getElementById('closeForm')
 
 
@@ -258,8 +256,6 @@ const closeCross = document.getElementById('closeForm')
 addVolunteer.addEventListener('click', () => {
 volunteerModal.style.display = 'block'
 addVolunteer.style.display = "none"
-editButton.disabled = true
-deleteButton.disabled = true
 })
 
 saveButton.addEventListener('click', () => {

@@ -1,148 +1,51 @@
-*{
-margin:0;
-padding:0;
-box-sizing: border-box;
-}
-/*&____________________HERO-BANNER_______________*/
-
-.logo{
-
-    height: 30vh;
-
-    img{
-        width: 100%;
-        height: 100%;
-        background-position-x: center;
-    }
-   
-    
-}
-
-/*&__________________SEARCH-BAR_______________________*/
-
-.search-container{
-    display: flex;
-    align-items: center;
-    background-color: #e0812a;
-    border: 1px solid black;
-    height: 5vh;
-
-    .search-form{
-        display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-}
-
-/*&__________________Volunteers-List___________________*/
-
-.volunteers-container{
-    width: 300px;
-    height: 400px;
-    background-color: #e09855;
-    padding: 20px;
-    border-radius: 20px;
-    overflow: scroll;
-
-
-}
-
-#add-volunteer_modal{
-    display: none;
-}
-
-
-/*&________________________MODAL_____________________*/
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
 
-  .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 300px;
-    border-radius: 10px;
-    text-align: center;
-    position: relative;
+body{
+  button {
+    background-color: #97b181;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+    min-width: 120px;
+    max-height: 40px;
 
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 25px;
-      font-weight: bold;
-      color: #aaa;
-      cursor: pointer;
-      transition: color 0.2s;
-
-      &:hover {
-        color: black;
-      }
+    &:hover {
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      transform: translateY(-3px);
+      background-color: #8ca873;
     }
 
-    .modal-buttons button {
-      margin: 0 10px;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
   }
 }
 
-#add-volunteer_modal{
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+/*&____________________HEADER_______________*/
 
+.logo {
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 5px rgba(151, 177, 129, 0.4);
 
-    width: 50vw;
-    padding: 1rem;
-    background-color: rgb(94, 135, 122);
-    border-radius: 0.5rem;
+  height: 30vh;
 
-
-    span{
-        display: flex;
-        cursor: pointer;
-    }
-
-  #volunteer-form{
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    
-  }
-
-  #save-btn{
-   
-  }
-
-
-}
-
-/*&__________________Bottom_Nav-Bar___________________*/
-.navBar{
-    /* position : fixed; */
-    bottom: 0;
-    left: 0;
+  img {
     width: 100%;
-/*!bar de recherche*/
+    height: 50%;
+    background-position: center;
+  }
+
+
+}
+
+/*&__________________SEARCH-FORM_______________________*/
+
 .search-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -179,19 +82,11 @@ box-sizing: border-box;
       outline: none;
     }
   }
+
+  
 }
-button {
-  background-color: #97b181; /* bleu */
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-  cursor: pointer;
-  min-width: 120px;
-  max-height: 40px;
-}
+
+/*&__________________Volunteers-List___________________*/
 
 #volunteers {
   display: flex;
@@ -224,20 +119,119 @@ button {
         list-style-type: none;
         margin: 0;
         padding: 0;
-        gap:10px;
+        gap: 10px;
       }
     }
   }
 }
 
-button:hover {
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-  transform: translateY(-3px);
-  background-color: #8ca873;
+#add-section{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+
+  #add-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 15vh;
 }
 
-.navBar {
+}
+
+/*&________________________MODAL_____________________*/
+
+
+.modal {
+  display: none;
   position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 25px;
+      font-weight: bold;
+      color: #aaa;
+      cursor: pointer;
+      transition: color 0.2s;
+
+      &:hover {
+        color: black;
+      }
+    }
+
+    .modal-buttons button {
+      margin: 0 10px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .modal-buttons{
+      display: flex;
+    }
+  }
+}
+
+#add-volunteer_modal {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1rem;
+  display: none;
+  overflow: hidden;
+
+
+  width: 50vw;
+  padding: 1rem;
+  background-color: #97b181;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  border: 1px solid black;
+
+
+  span {
+    display: flex;
+    cursor: pointer;
+  }
+
+  #volunteer-form {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+
+  }
+
+}
+
+/*&__________________Bottom_Nav-Bar___________________*/
+
+.navBar {
+  /* position: fixed; */
   bottom: 0;
   left: 0;
   width: 100%;
@@ -249,26 +243,32 @@ button:hover {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   z-index: 100;
-}
-.navBar a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-  font-size: 0.8rem;
-  gap: 0.2rem;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-  &.current{
-    color: #8ca873;
+  height: 10vh;
+
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    font-size: 0.8rem;
+    gap: 0.2rem;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+
+    &.current {
+      color: #8ca873;
+    }
   }
-}
-.navBar a:hover {
-  transform: translateY(-3px);
-  opacity: 0.8;
-}
-.navBar i {
-  width: 22px;
-  height: 22px;
+
+  .navBar a:hover {
+    transform: translateY(-3px);
+    opacity: 0.8;
+  }
+
+  .navBar i {
+    width: 22px;
+    height: 22px;
+  }
+
 }
