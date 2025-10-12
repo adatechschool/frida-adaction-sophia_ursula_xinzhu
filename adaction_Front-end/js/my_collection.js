@@ -121,6 +121,7 @@ const getFilteredData = async (id, location, date) => {
   }
 };
 //bouton reset
-document.querySelector("#reset").addEventListener("click", () => {
+document.querySelector("#reset").addEventListener("click", (e) => {
+  e.preventDefault()
   loadData(getData(id));
 })

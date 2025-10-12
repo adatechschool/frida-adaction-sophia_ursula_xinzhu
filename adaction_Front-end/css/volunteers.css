@@ -5,6 +5,11 @@
 }
 
 body{
+  font-family: roboto;
+  font-size: 1rem;
+  height: 100%;
+  width: 100%;
+
   button {
     background-color: #97b181;
     color: white;
@@ -28,20 +33,24 @@ body{
 
 /*&____________________HEADER_______________*/
 
-.logo {
+header {
+  height: 20vh;
   display: flex;
   align-items: center;
-  box-shadow: 0 0 5px rgba(151, 177, 129, 0.4);
+  justify-content: center;
+  background-image: url(/adaction_Front-end/images/back-hero.jpeg);
 
-  height: 30vh;
+  .logo {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.673);
+    padding: 0.2rem;
 
-  img {
-    width: 100%;
-    height: 50%;
-    background-position: center;
+    img {
+      height: 80%;
+      width: 80%;
+    }
   }
-
-
 }
 
 /*&__________________SEARCH-FORM_______________________*/
@@ -197,12 +206,15 @@ body{
   }
 }
 
+#add-volunteer_modal{
+ display: none;
+}
+
 #add-volunteer_modal {
-  display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   gap: 1rem;
-  display: none;
+ 
   overflow: hidden;
 
 
@@ -223,7 +235,7 @@ body{
     display: flex;
     justify-content: center;
     gap: 1rem;
-
+    flex-wrap: wrap;
   }
 
 }

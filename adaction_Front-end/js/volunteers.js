@@ -121,7 +121,7 @@ function addInlineEditing() {
             });
             await displayVolunteers();
             await loadCities();
-            showMessageModal('modifications enregistrées avec succée')
+            showMessageModal('Modifications enregistrées avec succès')
           } catch (err) {
             console.error("Erreur modification inline:", err)
           }
@@ -194,7 +194,7 @@ document.getElementById("confirmDelete").addEventListener("click", async () => {
       { method: "DELETE" });
     await displayVolunteers();
 
-    showMessageModal('bénévole supprimé avec succés')
+    showMessageModal('Bénévole supprimé avec succès')
   } catch (err) {
     console.error("Erreur suppression:", err);
   }
@@ -254,13 +254,13 @@ const closeCross = document.getElementById('closeForm')
 
 
 addVolunteer.addEventListener('click', () => {
-volunteerModal.style.display = 'block'
+volunteerModal.style.display = 'flex'
 addVolunteer.style.display = "none"
 })
 
 saveButton.addEventListener('click', () => {
   volunteerModal.style.display = 'none'
-  showMessageModal('bénévole ajouté avec succée')
+  showMessageModal('Bénévole ajouté avec succès')
 })
 
 //& Rechercher les bénévoles selon la ville et le nom :
